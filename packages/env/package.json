@@ -20,16 +20,16 @@
   },
   "keywords": [],
   "devDependencies": {
-    "@types/node": "^20.8.9",
+    "@types/node": "^20.12.5",
     "concurrently": "^8.2.2",
-    "esbuild": "^0.19.5",
-    "typescript": "^5.2.2",
-    "vite-env-only": "^2.2.0",
+    "esbuild": "^0.19.12",
+    "typescript": "^5.4.4",
+    "vite-env-only": "^2.2.1",
     "vitest": "^0.34.6"
   },
   "dependencies": {
     "@epic-web/remember": "^1.0.2",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "ts-invariant": "^0.10.3"
   },
   "sideEffects": false
