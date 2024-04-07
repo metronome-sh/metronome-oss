@@ -159,9 +159,10 @@ export class Environment {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const url = this.defined('REDIS_QUEUE_URL');
 
-    const password = this.production
-      ? this.defined('REDIS_QUEUE_PASSWORD')
-      : this.optional('REDIS_QUEUE_PASSWORD');
+    const password = this.when({
+      production: () => this.defined('REDIS_QUEUE_PASSWORD'),
+      development: () => this.optional('REDIS_QUEUE_PASSWORD'),
+    });
 
     const family = Number(this.optional('REDIS_QUEUE_FAMILY', '4'));
 
@@ -172,9 +173,10 @@ export class Environment {
     if (unique) {
       const url = this.defined('REDIS_UNIQUE_URL');
 
-      const password = this.production
-        ? this.defined('REDIS_UNIQUE_PASSWORD')
-        : this.optional('REDIS_UNIQUE_PASSWORD');
+      const password = this.when({
+        production: () => this.defined('REDIS_UNIQUE_PASSWORD'),
+        development: () => this.optional('REDIS_UNIQUE_PASSWORD'),
+      });
 
       const family = Number(this.optional('REDIS_UNIQUE_FAMILY', '4'));
 
@@ -184,9 +186,10 @@ export class Environment {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const url = this.defined('REDIS_CACHE_URL');
 
-    const password = this.production
-      ? this.defined('REDIS_CACHE_PASSWORD')
-      : this.optional('REDIS_CACHE_PASSWORD');
+    const password = this.when({
+      production: () => this.defined('REDIS_CACHE_PASSWORD'),
+      development: () => this.optional('REDIS_CACHE_PASSWORD'),
+    });
 
     const family = Number(this.optional('REDIS_CACHE_FAMILY', '4'));
 

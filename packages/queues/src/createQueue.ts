@@ -37,7 +37,10 @@ export function createQueue<T extends object, R = unknown>(
 
   const events = new QueueEvents(name, { connection });
 
-  function add(data: Parameters<typeof queue.add>[1], opts?: Parameters<typeof queue.add>[2]) {
+  function add(
+    data: Parameters<typeof queue.add>[1] = {} as T,
+    opts?: Parameters<typeof queue.add>[2],
+  ) {
     return queue.add(name, data, opts);
   }
 

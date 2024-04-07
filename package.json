@@ -10,6 +10,7 @@
     "dav:all": "pnpm -r --parallel dev",
     "dev": "pnpm -r --parallel --filter \"!@metronome/producer\" dev",
     "dev:web": "pnpm -r --parallel --filter \"@metronome/web...\" dev",
+    "dev:workers": "pnpm -r --parallel --filter \"@metronome/workers...\" dev",
     "build": "pnpm -r build",
     "docker:up": "docker-compose --env-file .env -f docker-compose.dev.yml up -d",
     "docker:stop": "docker-compose --env-file .env -f docker-compose.dev.yml stop",
@@ -51,9 +52,7 @@
     "yargs": "^17.7.2"
   },
   "pnpm": {
-    "patchedDependencies": {
-      "bullmq@5.1.9": "patches/bullmq@5.1.9.patch"
-    },
+    "patchedDependencies": {},
     "overrides": {
       "react": "18.3.0-canary-eb33bd747-20240312",
       "react-dom": "18.3.0-canary-eb33bd747-20240312"

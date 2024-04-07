@@ -61,3 +61,5 @@ export const otelMetrics = createQueue<{
   apiKey: string;
   metrics: unknown;
 }>('otel-metrics', commonConfig);
+
+export const rotateSalts = createQueue('rotate-salts');

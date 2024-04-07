@@ -6,6 +6,7 @@ import { events } from './events';
 import { metrics } from './metrics';
 import { otelSpans } from './otelSpans';
 import { otelMetrics } from './otelMetrics';
+import { rotateSalts } from './rotateSalts';
 
 console.log('[workers]', 'Initializing queues');
 
@@ -15,3 +16,5 @@ queues.otelSpans.worker(otelSpans, env.when({ production: 5, development: 1 }));
 queues.otelMetrics.worker(otelMetrics, env.when({ production: 5, development: 1 }));
 
 queues.aggregations.worker(aggregations, 1);
+
+queues.rotateSalts.worker(rotateSalts, 1);

@@ -43,14 +43,18 @@ export const GeneralSettingsForm: FunctionComponent = () => {
     [fetcher, projectSlug, teamSlug],
   );
 
-  // const state = useFetcherState(fetcher);
-
   const isDirty = Object.values(form.formState.dirtyFields).length > 0;
 
   return (
-    <div>
+    <div className="mt-4">
       <Form.Provider {...form}>
         <Form.Section title="General" description="Basic project information." />
+
+        <div className="mb-6">
+          <Form.Label>Project Id</Form.Label>
+          <Input className="mt-2" autoComplete="off" disabled defaultValue={project.id} />
+        </div>
+
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Form.Field
             control={form.control}
