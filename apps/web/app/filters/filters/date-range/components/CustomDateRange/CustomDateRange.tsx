@@ -3,7 +3,7 @@ import { type SelectRangeEventHandler } from 'react-day-picker';
 
 import { Calendar, cn } from '#app/components';
 import { type CustomComponentProps } from '#app/filters/filters.types';
-import { useMediaQuery } from '#app/hooks';
+import { useMediaQuery } from '#app/hooks/useMediaQuery';
 
 import { Updates } from '../../../../components/Filter/components/Updates';
 
