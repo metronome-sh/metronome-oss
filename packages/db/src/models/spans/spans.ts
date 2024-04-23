@@ -1,10 +1,14 @@
 import { prettyPrintZodError } from 'src/utils/prettyPrintZodError';
-import { clickhouse } from '../../modules/clickhouse';
-import { ClickHouseSpan, SpanInput } from './spans.types';
 import { z } from 'zod';
+
+import { clickhouse } from '../../modules/clickhouse';
 import { Project } from '../../types';
 import * as events from '../events/events';
 import { EventSchema } from '../events/events';
+import * as projects from '../projects';
+import { ClickHouseSpan, SpanInput } from './spans.types';
+
+const ATTRIBUTE_DENY_LIST = new Set(['client.address', 'user_agent.original']);
 
 export const SpanSchema = z.object({
   id: z.string(),
@@ -39,9 +43,8 @@ export async function create({
 
   const values: ClickHouseSpan[] = spans.map((s) => {
     // Do not store client.address or user_agent.original
-    const attributeDenyList = ['client.address', 'user_agent.original'];
     const attributesEntries = Object.entries(s.attributes).filter(
-      ([key]) => !attributeDenyList.includes(key),
+      ([key]) => !ATTRIBUTE_DENY_LIST.has(key),
     );
 
     const [attributesKeys, attributesValues] = attributesEntries.reduce(
@@ -65,6 +68,18 @@ export async function create({
       'span_attributes.value': attributesValues,
     };
   });
+
+  if (values.length > 0) {
+    const [span] = values;
+    const isCloudflare = span['span_attributes.key'].includes('@remix-run/cloudflare');
+
+    if (project.isCloudflare !== isCloudflare) {
+      await projects.update({
+        id: project.id,
+        attributes: { isCloudflare },
+      });
+    }
+  }
 
   await clickhouse.insert({
     table: 'spans',

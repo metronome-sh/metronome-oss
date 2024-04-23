@@ -5,8 +5,8 @@
   "license": "FSL-1.0-MIT",
   "type": "module",
   "scripts": {
-    "dev": "tsx --watch src/index.ts",
-    "start": "tsx src/index.ts"
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts"
   },
   "keywords": [],
   "devDependencies": {

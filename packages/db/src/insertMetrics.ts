@@ -1,5 +1,3 @@
-import { type Project } from './types';
-
 import * as actions from './models/actions';
 import * as loaders from './models/loaders';
 import * as pageviews from './models/pageviews';
@@ -7,6 +5,7 @@ import * as projects from './models/projects';
 import * as requests from './models/requests';
 import * as usages from './models/usages';
 import * as webVitals from './models/webVitals/webVitals';
+import { type Project } from './types';
 
 export async function insertMetrics({
   project,

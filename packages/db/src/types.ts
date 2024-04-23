@@ -37,7 +37,14 @@ export type NewProject = Pick<typeof projects.$inferInsert, 'name' | 'url' | 'te
 export type UpdateProjectAttributes = Partial<
   Pick<
     Project,
-    'name' | 'url' | 'description' | 'isPublic' | 'isNew' | 'clientVersion' | 'isUsingVite'
+    | 'name'
+    | 'url'
+    | 'description'
+    | 'isPublic'
+    | 'isNew'
+    | 'clientVersion'
+    | 'isUsingVite'
+    | 'isCloudflare'
   >
 >;
 

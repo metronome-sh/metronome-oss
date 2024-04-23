@@ -1,8 +1,8 @@
 import { projects, sourcemaps } from '@metronome/db';
 import {
+  type ActionFunctionArgs,
   unstable_createMemoryUploadHandler,
   unstable_parseMultipartFormData,
-  type ActionFunctionArgs,
 } from '@remix-run/node';
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -22,7 +22,10 @@ export async function action({ request }: ActionFunctionArgs) {
     unstable_createMemoryUploadHandler(),
   );
 
-  const file = formData.get('file') as Blob;
+  const file = formData.get('file') as Blob | undefined;
+
+  if (!file) return new Response('File not provided', { status: 400 });
+
   const arrayBuffer = await file.arrayBuffer();
   const fileBuffer = Buffer.from(arrayBuffer);
 

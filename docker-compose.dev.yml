@@ -54,7 +54,6 @@ services:
       CLICKHOUSE_USER: "${CLICKHOUSE_USER}"
       CLICKHOUSE_PASSWORD: "${CLICKHOUSE_PASSWORD}"
       CLICKHOUSE_DB: "${CLICKHOUSE_DB}"
-  
     volumes:
       - "clickhouse:/var/lib/clickhouse"
       - "./packages/db/clickhouse/docker/postgres.xml.template:/etc/clickhouse-server/config.d/postgres.xml.template"

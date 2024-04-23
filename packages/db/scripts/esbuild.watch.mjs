@@ -2,8 +2,8 @@ import { context } from 'esbuild';
 
 import { esbuildConfig } from './esbuild.mjs';
 
-const cjsContext = await context(esbuildConfig);
+const esContext = await context(esbuildConfig);
 
-await cjsContext.rebuild();
+await esContext.rebuild();
 
-await cjsContext.watch();
+await esContext.watch();

@@ -330,6 +330,13 @@
       "when": 1709485006682,
       "tag": "0046_remarkable_tana_nile",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "5",
+      "when": 1712727837687,
+      "tag": "0047_premium_tana_nile",
+      "breakpoints": true
     }
   ]
 }

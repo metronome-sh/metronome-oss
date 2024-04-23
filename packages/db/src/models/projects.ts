@@ -76,10 +76,7 @@ export async function findBySlug({ projectSlug, userId }: { projectSlug: string;
   return entry?.projects;
 }
 
-export async function findByApiKey(
-  { apiKey }: { apiKey: string },
-  options?: { fromCache?: boolean },
-) {
+export async function findByApiKey({ apiKey }: { apiKey: string }) {
   const project = await db().query.projects.findFirst({
     where: (projects, { eq }) => {
       return eq(projects.apiKey, apiKey);
