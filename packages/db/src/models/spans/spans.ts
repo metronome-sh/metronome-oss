@@ -1,4 +1,3 @@
-import { prettyPrintZodError } from 'src/utils/prettyPrintZodError';
 import { z } from 'zod';
 
 import { clickhouse } from '../../modules/clickhouse';
@@ -24,11 +23,6 @@ export const SpanSchema = z.object({
 export function valid(spanOrSpans: unknown): spanOrSpans is SpanInput | SpanInput[] {
   const schema = z.array(SpanSchema);
   const result = schema.safeParse(spanOrSpans);
-
-  if (!result.success) {
-    prettyPrintZodError(result.error);
-  }
-
   return result.success;
 }
 
@@ -71,7 +65,7 @@ export async function create({
 
   if (values.length > 0) {
     const [span] = values;
-    const isCloudflare = span['span_attributes.key'].includes('@remix-run/cloudflare');
+    const isCloudflare = span['span_attributes.key'].includes('package.remix.cloudflare');
 
     if (project.isCloudflare !== isCloudflare) {
       await projects.update({

@@ -110,13 +110,23 @@ export async function getSourcesFromStackTrace({
     Key: `${project.id}/${version}/mapping.json`,
   });
 
-  const { Body } = await s3Client.send(getCommand);
+  let mapping: { routeFiles: string[]; sources: Record<string, string> } = {
+    routeFiles: [],
+    sources: {},
+  };
 
-  invariant(Body, 'Body should be defined');
+  try {
+    const { Body } = await s3Client.send(getCommand);
 
-  const context = await Body.transformToString();
+    invariant(Body, 'Body should be defined');
 
-  const mapping = JSON.parse(context) as { routeFiles: string[]; sources: Record<string, string> };
+    const context = await Body.transformToString();
+
+    mapping = JSON.parse(context) as { routeFiles: string[]; sources: Record<string, string> };
+  } catch (error) {
+    // TODO be able to handle if the mapping.json file is not found better
+    console.error(`Error while fetching mapping.json for project ${project.id}/${version}`, error);
+  }
 
   const files = Object.keys(mapping.sources);
   const routeFiles = mapping.routeFiles;

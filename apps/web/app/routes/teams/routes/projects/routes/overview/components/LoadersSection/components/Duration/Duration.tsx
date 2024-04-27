@@ -4,15 +4,12 @@ import { type FunctionComponent, Suspense } from 'react';
 import { invariant } from 'ts-invariant';
 
 import { useEventData } from '#app/hooks/useEventData';
-import { useTeamProjectLoaderData } from '#app/routes/teams/routes/projects/hooks/index.js';
 import { formatDuration } from '#app/utils';
 
 import { Metric } from '../../../../../../components/Metric';
 import { useIsNavigatingOverview } from '../../../../hooks/useIsNavigatingOverview';
 
 export const Duration: FunctionComponent = () => {
-  const { project } = useTeamProjectLoaderData();
-
   const { loadersOverview } = useLoaderData() as {
     loadersOverview?: ReturnType<typeof loaders.overview>;
   };
@@ -30,8 +27,6 @@ export const Duration: FunctionComponent = () => {
   if (isNavigating) {
     return <Metric.Skeleton title={title} compact />;
   }
-
-  if (project.isCloudflare) return null;
 
   return (
     <Suspense fallback={<Metric.Skeleton title={title} compact />}>

@@ -1,5 +1,4 @@
 import { and, between, eq, sql } from 'drizzle-orm';
-
 import { db } from '../db';
 import {
   getPageviewsOverviewAggregatedView,

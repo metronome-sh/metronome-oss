@@ -1,6 +1,5 @@
 import { and, between, eq, sql } from 'drizzle-orm';
 import { throttleTime } from 'rxjs';
-import { prettyPrintZodError } from 'src/utils/prettyPrintZodError';
 
 import { db } from '../../db';
 import {
@@ -26,11 +25,6 @@ import { getScore } from './getScore';
 
 export function isWebVitalEvent(event: unknown): event is WebVitalEvent {
   const result = WebVitalEventSchema.safeParse(event);
-
-  if (!result.success) {
-    prettyPrintZodError(result.error);
-  }
-
   return result.success;
 }
 

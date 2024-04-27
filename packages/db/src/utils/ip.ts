@@ -29,9 +29,12 @@ function getReader(): ReaderModel {
     return readerInstance;
   }
 
-  // prettier-ignore
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { database } = require(path.join(__dirname, '../../geoip/manifest.json'));
+  // Dirname in esm
+  const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
+  const { database } = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '../../geoip/manifest.json'), 'utf-8'),
+  );
 
   const databaseDir = database;
 

@@ -1,5 +1,3 @@
-import { prettyPrintZodError } from 'src/utils/prettyPrintZodError';
-
 import { loaders } from '../schema';
 import { LoaderEventSchema } from '../schemaValidation';
 import { LoaderEvent } from '../types';
@@ -12,11 +10,6 @@ import {
 
 export function isLoaderEvent(event: unknown): event is LoaderEvent {
   const result = LoaderEventSchema.safeParse(event);
-
-  if (!result.success) {
-    prettyPrintZodError(result.error);
-  }
-
   return result.success;
 }
 
@@ -44,8 +37,6 @@ export function convertSpanToLoaderEvent(span: any): LoaderEvent {
   };
 
   const loaderEvent = { name, details };
-
-  console.log({ loaderEvent: JSON.stringify(loaderEvent), span: JSON.stringify(span) });
 
   if (!isLoaderEvent(loaderEvent)) {
     throw new Error('Invalid loader event');

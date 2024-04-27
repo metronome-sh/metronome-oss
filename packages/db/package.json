@@ -19,7 +19,7 @@
     "migrate:up": "tsx ./drizzle/migrate.mts",
     "geoip:download": "NODE_ENV=production tsx ./cli/geoip.mts",
     "test": "vitest run",
-    "configure": "pnpm migrate:up && pnpm geoip:download",
+    "configure": "pnpm migrate:up && pnpm clickhouse:up && pnpm geoip:download ",
     "drizzle:up": "tsx ./drizzle/migrate.mts",
     "clickhouse:create": "migrate -c ./clickhouse --template-file ./template.cjs create",
     "clickhouse:up": "migrate -c ./clickhouse --store=./store.cjs up",

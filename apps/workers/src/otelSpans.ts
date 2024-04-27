@@ -30,23 +30,6 @@ export async function otelSpans(job: typeof queues.otelSpans.$inferJob) {
 
   invariant(team, `Team ${project.teamId} not found`);
 
-  if (project.isNew) {
-    await cache.forget(apiKey);
-
-    const updatedProject = await projects.update({
-      id: project.id,
-      attributes: { isNew: false },
-    });
-
-    await cache.set([apiKey, 'project'], updatedProject, 60);
-
-    await queues.events.add({
-      projectId: project.id,
-      eventsNames: ['first-event'],
-      ts: Date.now(),
-    });
-  }
-
   await spans.create({ spanOrSpans: data, project });
 
   const transformed = (Array.isArray(data) ? data : [data])
