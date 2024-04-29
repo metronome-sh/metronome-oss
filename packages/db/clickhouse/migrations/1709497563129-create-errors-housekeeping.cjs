@@ -10,10 +10,9 @@ module.exports.up = async function () {
           hash String,
           status LowCardinality(String),
           last_updated DateTime64(3) DEFAULT now64(3),
-          version UInt64 DEFAULT 1
-      ) ENGINE = ReplacingMergeTree(version)
+      ) ENGINE = ReplacingMergeTree(last_updated)
       PARTITION BY toYYYYMM(last_updated)
-      ORDER BY (project_id, hash, last_updated)
+      ORDER BY (project_id, hash)
     `,
   });
 };

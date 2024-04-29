@@ -9,7 +9,6 @@ import { ClickHouseEvent } from '../events/events.types';
 import {
   ClickHouseProjectError,
   ClickHouseProjectErrorListItem,
-  ErrorHousekeeping,
   ErrorHousekeepingStatus,
   ProjectError,
   ProjectErrorWithStacktrace,
@@ -41,37 +40,13 @@ export async function createErrorHouseKeepingFromEvents({
 
   if (values.length === 0) return;
 
-  // Get housekeeping errors that already exist
-  const housekeepingResult = await clickhouse.query({
-    query: `
-      select *
-      from errors_housekeeping
-      where (project_id, hash, last_updated) IN (
-          select project_id, hash, max(last_updated)
-          from errors_housekeeping
-          where project_id = {projectId: String}
-          and hash in ({hashes: Array(String)})
-          group by project_id, hash
-      )
-    `,
-    format: 'JSONEachRow',
-    query_params: {
-      projectId: project.id,
-      hashes,
-    },
-  });
-
-  const existingHousekeeping = await housekeepingResult.json<ErrorHousekeeping[]>();
-
   // Create update errors housekeeping values
   const errorsHousekeepingValues = hashes.map((hash) => {
-    const existing = existingHousekeeping.find((e) => e.hash === hash);
     return {
       project_id: project.id,
       hash,
       status: 'unresolved' as const,
       last_updated: new Date().valueOf(),
-      version: existing ? Number(existing.version) + 1 : 1,
     };
   });
 
@@ -165,32 +140,11 @@ async function updateStatus({
   hashes: string[];
   status: ErrorHousekeepingStatus;
 }) {
-  const result = await clickhouse.query({
-    query: `
-      select *
-      from errors_housekeeping
-      where (project_id, hash, last_updated) IN (
-          select project_id, hash, max(last_updated)
-          from errors_housekeeping
-          where project_id = {projectId: String}
-          and hash in ({hashes: Array(String)})
-          group by project_id, hash
-      )
-    `,
-    format: 'JSONEachRow',
-    query_params: {
-      projectId: project.id,
-      hashes,
-    },
-  });
-
-  const json = await result.json<ErrorHousekeeping[]>();
-
-  const values = json.map((error) => ({
-    ...error,
+  const values = hashes.map((hash) => ({
+    project_id: project.id,
+    hash,
     status,
-    last_updated: new Date().valueOf(),
-    version: Number(error.version) + 1,
+    updated_at: new Date().valueOf(),
   }));
 
   await clickhouse.insert({
