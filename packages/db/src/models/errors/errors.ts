@@ -1,21 +1,19 @@
 import { queues } from '@metronome/queues';
 import crypto from 'crypto';
-import { and, eq, gte, inArray, lt, sql } from 'drizzle-orm';
-import { db } from '../../db';
-import { Project, Range, User } from '../../types';
-import { errorsHousekeeping } from '../../schema';
+import { invariant } from 'ts-invariant';
+
 import { clickhouse } from '../../modules/clickhouse';
-import { ClickHouseEvent } from '../events/events.types';
+import { Project, Range, User } from '../../types';
 import { observable, operators, throttleTime } from '../../utils/events';
+import { ClickHouseEvent } from '../events/events.types';
 import {
   ClickHouseProjectError,
   ClickHouseProjectErrorListItem,
+  ErrorHousekeeping,
   ErrorHousekeepingStatus,
   ProjectError,
   ProjectErrorWithStacktrace,
 } from './errors.types';
-import { invariant } from 'ts-invariant';
-import { getSourcesFromStackTrace } from '../sourcemaps/sourcemaps';
 
 export async function createErrorHouseKeepingFromEvents({
   events,
@@ -43,13 +41,45 @@ export async function createErrorHouseKeepingFromEvents({
 
   if (values.length === 0) return;
 
-  await db({ write: true })
-    .insert(errorsHousekeeping)
-    .values(values)
-    .onConflictDoUpdate({
-      target: [errorsHousekeeping.projectId, errorsHousekeeping.hash],
-      set: { status: 'unresolved', updatedAt: new Date() },
-    });
+  // Get housekeeping errors that already exist
+  const housekeepingResult = await clickhouse.query({
+    query: `
+      select *
+      from errors_housekeeping
+      where (project_id, hash, last_updated) IN (
+          select project_id, hash, max(last_updated)
+          from errors_housekeeping
+          where project_id = {projectId: String}
+          and hash in ({hashes: Array(String)})
+          group by project_id, hash
+      )
+    `,
+    format: 'JSONEachRow',
+    query_params: {
+      projectId: project.id,
+      hashes,
+    },
+  });
+
+  const existingHousekeeping = await housekeepingResult.json<ErrorHousekeeping[]>();
+
+  // Create update errors housekeeping values
+  const errorsHousekeepingValues = hashes.map((hash) => {
+    const existing = existingHousekeeping.find((e) => e.hash === hash);
+    return {
+      project_id: project.id,
+      hash,
+      status: 'unresolved' as const,
+      last_updated: new Date().valueOf(),
+      version: existing ? Number(existing.version) + 1 : 1,
+    };
+  });
+
+  await clickhouse.insert({
+    table: 'errors_housekeeping',
+    values: errorsHousekeepingValues,
+    format: 'JSONEachRow',
+  });
 
   await queues.events.add({
     eventsNames: ['errors-changed'],
@@ -83,7 +113,16 @@ export async function all({
         groupUniqArrayMerge(route_ids) as routeIds
       from
         errors
-      inner join errors_housekeeping
+      inner join (
+        select *
+        from errors_housekeeping
+        where (project_id, hash, last_updated) in (
+          select project_id, hash, max(last_updated) as last_updated
+          from errors_housekeeping
+          where project_id = {projectId: String}
+          group by project_id, hash
+        )
+      ) as errors_housekeeping
         on errors.hash = errors_housekeeping.hash
         and errors.project_id = errors_housekeeping.project_id
         and errors_housekeeping.status = {status: String}
@@ -126,12 +165,39 @@ async function updateStatus({
   hashes: string[];
   status: ErrorHousekeepingStatus;
 }) {
-  await db({ write: true })
-    .update(errorsHousekeeping)
-    .set({ status })
-    .where(
-      and(eq(errorsHousekeeping.projectId, project.id), inArray(errorsHousekeeping.hash, hashes)),
-    );
+  const result = await clickhouse.query({
+    query: `
+      select *
+      from errors_housekeeping
+      where (project_id, hash, last_updated) IN (
+          select project_id, hash, max(last_updated)
+          from errors_housekeeping
+          where project_id = {projectId: String}
+          and hash in ({hashes: Array(String)})
+          group by project_id, hash
+      )
+    `,
+    format: 'JSONEachRow',
+    query_params: {
+      projectId: project.id,
+      hashes,
+    },
+  });
+
+  const json = await result.json<ErrorHousekeeping[]>();
+
+  const values = json.map((error) => ({
+    ...error,
+    status,
+    last_updated: new Date().valueOf(),
+    version: Number(error.version) + 1,
+  }));
+
+  await clickhouse.insert({
+    table: 'errors_housekeeping',
+    values,
+    format: 'JSONEachRow',
+  });
 
   await queues.events.add({
     eventsNames: ['errors-changed'],
@@ -141,20 +207,24 @@ async function updateStatus({
 }
 
 export async function unseenErrorsCount({ project, user }: { project: Project; user: User }) {
-  const result = await db()
-    .select({
-      count: sql<number>`count(*)::integer`,
-    })
-    .from(errorsHousekeeping)
-    .where(
-      and(
-        eq(errorsHousekeeping.projectId, project.id),
-        eq(errorsHousekeeping.status, 'unresolved'),
-        gte(errorsHousekeeping.updatedAt, new Date(user.settings?.lastErrorVisitedAt ?? 0)),
-      ),
-    );
+  const result = await clickhouse.query({
+    query: `
+      select count(*) as count
+      from errors_housekeeping
+      where project_id = {projectId: String}
+      and status = 'unresolved'
+      and last_updated >= {lastErrorVisitedAt: UInt64}
+    `,
+    format: 'JSONEachRow',
+    query_params: {
+      projectId: project.id,
+      lastErrorVisitedAt: user.settings?.lastErrorVisitedAt ?? 0,
+    },
+  });
 
-  return result[0].count;
+  const json = await result.json<{ count: number }[]>();
+
+  return Number(json[0]?.count ?? 0);
 }
 
 export function archive({ project, hashes }: { project: Project; hashes: string[] }) {

@@ -1,6 +1,4 @@
 import { SetFieldType } from 'type-fest';
-import { errorsHousekeeping } from '../../schema';
-import { StackTraceSource } from '../sourcemaps/sourcemaps.types';
 
 export type ProjectError = {
   occurrences: number;
@@ -30,6 +28,12 @@ export type ProjectErrorWithStacktrace = ProjectError & {
   stacktrace: string;
 };
 
-export type ErrorHousekeeping = typeof errorsHousekeeping.$inferSelect;
+export type ErrorHousekeeping = {
+  project_id: string;
+  hash: string;
+  status: 'unresolved' | 'resolved' | 'archived';
+  last_updated: number;
+  version: number;
+};
 
 export type ErrorHousekeepingStatus = NonNullable<ErrorHousekeeping['status']>;
