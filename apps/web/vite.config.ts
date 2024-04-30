@@ -21,6 +21,7 @@ export default defineConfig({
   logLevel: 'info',
   define: {
     'process.env.NODE_DEBUG': JSON.stringify(false),
+    __dirname: JSON.stringify(path.resolve(__dirname, './build/server/assets')),
   },
   plugins: [envOnly(), !isStorybook ? remix : removeNonDefaultExportsFromRoutes(), tsconfigPaths()],
 });
