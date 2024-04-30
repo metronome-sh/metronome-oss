@@ -1,6 +1,6 @@
-import bcryptjs from 'bcryptjs';
 import { eq, sql } from 'drizzle-orm';
 import { invariant } from 'ts-invariant';
+import argon2 from 'argon2';
 
 import { db } from '../db';
 import { nanoid } from '../modules/nanoid';
@@ -8,10 +8,8 @@ import { users, usersToTeams } from '../schema';
 import { type NewUser, type UpdateUser, type User } from '../types';
 import { buildJsonbObject } from '../utils/buildJsonObject';
 
-const { compare, hash } = bcryptjs;
-
 export async function insert(newUser: NewUser): Promise<User> {
-  const hashedPassword = newUser.password ? await hash(newUser.password, 10) : null;
+  const hashedPassword = newUser.password ? await argon2.hash(newUser.password) : null;
 
   const [createdUser] = await db({ write: true })
     .insert(users)
@@ -46,7 +44,7 @@ export async function authenticate(credentials: {
 
   const { password, ...user } = userWithPassword;
 
-  const isPasswordValid = await compare(credentials.password, password || '');
+  const isPasswordValid = await argon2.verify(password || '', credentials.password);
 
   if (!isPasswordValid) return null;
 
@@ -215,7 +213,7 @@ export async function markNotificationAsSeen(userId: string, notificationId: str
 }
 
 export async function resetUserPassord(newPassword: string) {
-  const hashedPassword = await hash(newPassword, 10);
+  const hashedPassword = await argon2.hash(newPassword);
 
   const [user] = await db({ write: true })
     .select({ id: users.id, email: users.email })

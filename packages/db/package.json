@@ -52,7 +52,7 @@
     "@metronome/env": "workspace:*",
     "@metronome/queues": "workspace:*",
     "adm-zip": "^0.5.12",
-    "bcryptjs": "^2.4.3",
+    "argon2": "^0.40.1",
     "cheerio": "1.0.0-rc.12",
     "device-detector-js": "^3.0.3",
     "drizzle-orm": "^0.29.5",
