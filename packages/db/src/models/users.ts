@@ -1,15 +1,32 @@
 import { eq, sql } from 'drizzle-orm';
 import { invariant } from 'ts-invariant';
-import argon2 from 'argon2';
-
+import { randomBytes, scrypt as scryptSync } from 'crypto';
+import { promisify } from 'util';
 import { db } from '../db';
 import { nanoid } from '../modules/nanoid';
 import { users, usersToTeams } from '../schema';
 import { type NewUser, type UpdateUser, type User } from '../types';
 import { buildJsonbObject } from '../utils/buildJsonObject';
 
+const scrypt = promisify(scryptSync);
+const HASH_KEY_LENGTH = 64;
+
+async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString('hex');
+  const buffer = (await scrypt(password, salt, HASH_KEY_LENGTH)) as Buffer;
+  return `${salt}:${buffer.toString('hex')}`;
+}
+
+async function verifyPassword(password: string, hashedPassword: string) {
+  const [salt, key] = hashedPassword.split(':');
+  const buffer = (await scrypt(password, salt, HASH_KEY_LENGTH)) as Buffer;
+  return buffer.toString('hex') === key;
+}
+
 export async function insert(newUser: NewUser): Promise<User> {
-  const hashedPassword = newUser.password ? await argon2.hash(newUser.password) : null;
+  const hashedPassword: string | null = newUser.password
+    ? await hashPassword(newUser.password)
+    : null;
 
   const [createdUser] = await db({ write: true })
     .insert(users)
@@ -44,7 +61,7 @@ export async function authenticate(credentials: {
 
   const { password, ...user } = userWithPassword;
 
-  const isPasswordValid = await argon2.verify(password || '', credentials.password);
+  const isPasswordValid = await verifyPassword(credentials.password, password ?? '');
 
   if (!isPasswordValid) return null;
 
@@ -213,7 +230,7 @@ export async function markNotificationAsSeen(userId: string, notificationId: str
 }
 
 export async function resetUserPassord(newPassword: string) {
-  const hashedPassword = await argon2.hash(newPassword);
+  const hashedPassword = await hashPassword(newPassword);
 
   const [user] = await db({ write: true })
     .select({ id: users.id, email: users.email })
