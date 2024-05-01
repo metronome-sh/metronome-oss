@@ -41,7 +41,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     hash,
   });
 
-  const event = events.find({ project, id: error.eventIds.at(-1)! });
+  const event = await events.find({ project, id: error.eventIds.at(-1)! });
 
   return defer({ error, sources, event });
 }
