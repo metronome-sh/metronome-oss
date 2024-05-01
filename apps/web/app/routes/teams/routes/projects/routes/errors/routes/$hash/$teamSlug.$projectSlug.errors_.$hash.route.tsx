@@ -34,16 +34,21 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (!error) throw notFound();
 
-  const sources = await sourcemaps.getSourcesFromStackTrace({
-    project,
-    version: error.versions.at(-1)!,
-    stacktrace: error.stacktrace,
-    hash,
-  });
+  try {
+    const sources = await sourcemaps.getSourcesFromStackTrace({
+      project,
+      version: error.versions.at(-1)!,
+      stacktrace: error.stacktrace,
+      hash,
+    });
 
-  const event = await events.find({ project, id: error.eventIds.at(-1)! });
+    const event = await events.find({ project, id: error.eventIds.at(-1)! });
 
-  return defer({ error, sources, event });
+    return defer({ error, sources, event });
+  } catch (error) {
+    console.error('Error', error);
+    throw error;
+  }
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
