@@ -12,6 +12,10 @@ import * as stackTraceParser from 'stacktrace-parser';
 import { env } from '@metronome/env';
 import * as cheerio from 'cheerio';
 
+(SourceMapConsumer as any).initialize({
+  'lib/mappings.wasm': 'https://cdn.jsdelivr.net/npm/source-map/lib/mappings.wasm',
+});
+
 export async function create({
   fileBuffer,
   version,

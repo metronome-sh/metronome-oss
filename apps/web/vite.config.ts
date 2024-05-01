@@ -28,6 +28,6 @@ export default defineConfig({
     envOnly(),
     !isStorybook ? remix : removeNonDefaultExportsFromRoutes(),
     tsconfigPaths(),
-    copySourceMapWasm(),
+    // copySourceMapWasm(),
   ],
 });
