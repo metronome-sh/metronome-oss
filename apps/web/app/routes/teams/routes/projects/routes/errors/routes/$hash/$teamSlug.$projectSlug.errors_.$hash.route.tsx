@@ -1,6 +1,6 @@
 import { Breadcrumb, Heading, NotificationsOutlet } from '#app/components';
-import { defer, useParams } from '@remix-run/react';
-import { ActionFunctionArgs, LoaderFunctionArgs, json } from '@remix-run/node';
+import { useParams } from '@remix-run/react';
+import { ActionFunctionArgs, LoaderFunctionArgs, json, defer } from '@remix-run/node';
 import { invariant } from 'ts-invariant';
 import { handle } from '#app/handlers/handle';
 import { errors, projects, sourcemaps, events } from '@metronome/db';
@@ -34,7 +34,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (!error) throw notFound();
 
-  const sources = sourcemaps.getSourcesFromStackTrace({
+  const sources = await sourcemaps.getSourcesFromStackTrace({
     project,
     version: error.versions.at(-1)!,
     stacktrace: error.stacktrace,
