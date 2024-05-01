@@ -47,6 +47,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     return defer({ error, sources, event });
   } catch (error) {
     console.error('Error', error);
+    console.error('Error', (error as Error).stack);
     throw error;
   }
 }
