@@ -86,6 +86,8 @@ export async function getSourcesFromStackTrace({
     if (cached) return cached;
   }
 
+  console.log('past cache check');
+
   const result = await clickhouse.query({
     query: `
       select count() from sourcemaps
@@ -101,6 +103,8 @@ export async function getSourcesFromStackTrace({
 
   const [row] = await result.json<{ 'count()': string }[]>();
 
+  console.log('row', row);
+
   if (row['count()'] === '0') return [];
 
   const bucketName = await getBucket();
@@ -114,6 +118,8 @@ export async function getSourcesFromStackTrace({
     routeFiles: [],
     sources: {},
   };
+
+  console.log('before try catch');
 
   try {
     const { Body } = await s3Client.send(getCommand);
@@ -148,6 +154,8 @@ export async function getSourcesFromStackTrace({
 
     return { at: stackFrame.file, filename: source ?? null, lineNumber, column, offset };
   });
+
+  console.log('stackFrames', stackFrames);
 
   const cachedSourceMapContents: Record<string, string> = {};
 
@@ -188,7 +196,11 @@ export async function getSourcesFromStackTrace({
       continue;
     }
 
+    console.log('filename', filename);
+
     const consumer = await new SourceMapConsumer(await getSourceMapContents(filename!));
+
+    console.log('past consumer');
 
     const originalPosition = consumer.originalPositionFor({
       line: lineNumber!,
@@ -243,6 +255,8 @@ export async function getSourcesFromStackTrace({
       return acc;
     }, []);
 
+    console.log('past boundaries');
+
     const code = await codeToHtml(content, {
       lang: 'tsx',
       theme: 'github-dark-dimmed',
@@ -273,6 +287,8 @@ export async function getSourcesFromStackTrace({
       ],
     });
 
+    console.log('before cheerio');
+
     // TODO use tokens to remove lines instead of cheerio
     const $ = cheerio.load(code);
 
@@ -290,6 +306,8 @@ export async function getSourcesFromStackTrace({
     }
     consumer.destroy();
   }
+
+  console.log('sources', sources);
 
   await cache.set(`sources:${project.id}:${version}:${hash}`, sources, 604800 /* 1 week */);
 
