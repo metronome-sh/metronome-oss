@@ -6,7 +6,6 @@ import { routeExtensions } from 'remix-custom-routes';
 import path from 'path';
 import envOnly from 'vite-env-only';
 import { removeNonDefaultExportsFromRoutes } from './.storybook/remove-non-default-exports';
-import { copySourceMapWasm } from './vite/copy-source-map-wasm';
 
 installGlobals();
 
@@ -24,10 +23,5 @@ export default defineConfig({
     'process.env.NODE_DEBUG': JSON.stringify(false),
     __dirname: JSON.stringify(path.resolve(__dirname, './build/server/assets')),
   },
-  plugins: [
-    envOnly(),
-    !isStorybook ? remix : removeNonDefaultExportsFromRoutes(),
-    tsconfigPaths(),
-    // copySourceMapWasm(),
-  ],
+  plugins: [envOnly(), !isStorybook ? remix : removeNonDefaultExportsFromRoutes(), tsconfigPaths()],
 });
