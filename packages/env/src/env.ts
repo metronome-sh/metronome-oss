@@ -247,15 +247,16 @@ export class Environment {
     const endpoint = this.optional('S3_ENDPOINT');
     const s3ForcePathStyle = this.optional('S3_FORCE_PATH_STYLE', 'false') === 'true';
     const region = this.optional('S3_REGION', 'us-east-1');
+    const bucket = this.required('S3_BUCKET_NAME');
 
     return {
-      endpoint,
-      region,
-      credentials: {
-        accessKeyId,
-        secretAccessKey,
+      bucket,
+      client: {
+        endpoint,
+        region,
+        credentials: { accessKeyId, secretAccessKey },
+        forcePathStyle: s3ForcePathStyle,
       },
-      forcePathStyle: s3ForcePathStyle,
     };
   }
 }

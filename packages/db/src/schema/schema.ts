@@ -325,25 +325,3 @@ export const pageviews = pgTable(
     };
   },
 );
-
-export const ErrorHousekeepingStatus = pgEnum('errors_housekeeping_status', [
-  'unresolved',
-  'resolved',
-  'archived',
-]);
-
-export const errorsHousekeeping = pgTable(
-  'errors_housekeeping',
-  {
-    projectId: text('project_id').notNull(),
-    hash: text('hash').notNull(),
-    status: ErrorHousekeepingStatus('status').default('unresolved'),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp('updated_at').notNull().defaultNow(),
-  },
-  (table) => {
-    return {
-      pk: primaryKey({ columns: [table.projectId, table.hash] }),
-    };
-  },
-);

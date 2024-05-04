@@ -18,7 +18,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   invariant(projectSlug, 'projectSlug should be defined');
   invariant(hash, 'hash should be defined');
 
-  const { auth, query } = await handle(request);
+  const { auth } = await handle(request);
 
   const user = await auth.user();
 

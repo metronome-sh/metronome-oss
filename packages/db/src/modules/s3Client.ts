@@ -12,23 +12,23 @@ export { HeadBucketCommand, CreateBucketCommand, PutObjectCommand } from '@aws-s
 
 export const s3Client = remember('s3Client', () => {
   return new S3Client({
-    ...env.s3(),
+    ...env.s3().client,
   });
 });
 
 let bucketExists: true | undefined;
-const bucketName = 'metronome-sourcemaps';
+const { bucket } = env.s3();
 
 export async function getBucket() {
   if (bucketExists) {
-    return bucketName;
+    return bucket;
   }
 
   try {
-    await s3Client.send(new HeadBucketCommand({ Bucket: bucketName }));
+    await s3Client.send(new HeadBucketCommand({ Bucket: bucket }));
   } catch (error) {
     if ((error as Error).name === 'NotFound') {
-      await s3Client.send(new CreateBucketCommand({ Bucket: bucketName }));
+      await s3Client.send(new CreateBucketCommand({ Bucket: bucket }));
     } else {
       console.error('Error', error);
     }
@@ -36,12 +36,12 @@ export async function getBucket() {
 
   bucketExists = true;
 
-  return bucketName;
+  return bucket;
 }
 
 export async function directoryExists(directory: string) {
   const params = {
-    Bucket: bucketName,
+    Bucket: bucket,
     Prefix: directory.endsWith('/') ? directory : `${directory}/`,
     Delimiter: '/',
     MaxKeys: 1,
@@ -67,7 +67,7 @@ export async function deleteDirectory(directory: string) {
   }
 
   const listParams = {
-    Bucket: bucketName,
+    Bucket: bucket,
     Prefix: directory.endsWith('/') ? directory : `${directory}/`,
   };
 
@@ -77,7 +77,7 @@ export async function deleteDirectory(directory: string) {
     if (!listedObjects.Contents?.length) return;
 
     const deleteParams = {
-      Bucket: bucketName,
+      Bucket: bucket,
       Delete: { Objects: listedObjects.Contents.map(({ Key }) => ({ Key })) },
     };
 
