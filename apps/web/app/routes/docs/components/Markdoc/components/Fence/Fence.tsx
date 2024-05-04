@@ -1,17 +1,6 @@
-// import {
-//   faClipboard,
-//   faClipboardCheck,
-//   faFile,
-// } from '@fortawesome/pro-light-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { Highlight, Language, themes } from 'prism-react-renderer';
-import {
-  FunctionComponent,
-  PropsWithChildren,
-  useCallback,
-  useState,
-} from 'react';
+import { FunctionComponent, PropsWithChildren, useCallback, useState } from 'react';
 
 import { cn, Icon } from '#app/components';
 
@@ -34,8 +23,8 @@ export const Fence: FunctionComponent<FenceProps> = ({
     Array.isArray(children)
       ? (children as string[]).join('')
       : typeof children === 'string'
-      ? children
-      : ''
+        ? children
+        : ''
   ).replace(/\n$/, '');
 
   const [copied, setCopied] = useState(false);
@@ -44,8 +33,13 @@ export const Fence: FunctionComponent<FenceProps> = ({
     // Remove comments
     const clipboardContent = content.replace(/.*\/\/.*\n/g, '');
 
-    await navigator.clipboard?.writeText(clipboardContent);
-    document.execCommand('copy', true, clipboardContent);
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(clipboardContent);
+    } else {
+      // Deselect any selected text
+      window.getSelection()?.removeAllRanges();
+      document.execCommand('copy', true, clipboardContent);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [setCopied, content]);
