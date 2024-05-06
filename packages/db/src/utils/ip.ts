@@ -29,11 +29,10 @@ function getReader(): ReaderModel {
     return readerInstance;
   }
 
-  // Dirname in esm
   const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
   const { database } = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '../../geoip/manifest.json'), 'utf-8'),
+    fs.readFileSync(path.join(__dirname, '../geoip/manifest.json'), 'utf-8'),
   );
 
   const databaseDir = database;

@@ -1,6 +1,7 @@
 'use strict';
 
 const { clickhouse } = require('../clickhouse.cjs');
+const { AggregatingMergeTree } = require('../engines.cjs');
 
 module.exports.up = async function () {
   await clickhouse.command({
@@ -18,7 +19,7 @@ module.exports.up = async function () {
         versions AggregateFunction(groupUniqArray, String),
         event_ids AggregateFunction(groupUniqArray, UUID),
         route_ids AggregateFunction(groupUniqArray, String)
-      ) ENGINE = AggregatingMergeTree()
+      ) ENGINE = ${AggregatingMergeTree}
       ORDER BY (project_id, hash);
     `,
   });

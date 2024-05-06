@@ -1,4 +1,5 @@
 const { clickhouse } = require('./clickhouse.cjs');
+const { MergeTree } = require('./engines.cjs');
 
 class ClickHouseStore {
   async load(fn) {
@@ -14,7 +15,7 @@ class ClickHouseStore {
 
       if (!tableExists) {
         await clickhouse.command({
-          query: 'CREATE TABLE migrations (migration String) ENGINE = TinyLog',
+          query: `CREATE TABLE migrations (migration String, applied DateTime64(3) DEFAULT now64(3)) ENGINE = ${MergeTree} ORDER BY applied;`,
         });
       }
 
@@ -41,7 +42,10 @@ class ClickHouseStore {
     try {
       const migrations = set.migrations
         .filter((migration) => migration.timestamp !== null)
-        .map((migration) => ({ migration: JSON.stringify(migration) }));
+        .map((migration) => ({
+          migration: JSON.stringify(migration),
+          applied: migration.timestamp,
+        }));
 
       await clickhouse.query({ query: 'TRUNCATE TABLE migrations' });
       await clickhouse.insert({

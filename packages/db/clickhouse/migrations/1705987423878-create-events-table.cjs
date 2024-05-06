@@ -1,6 +1,7 @@
 'use strict';
 
 const { clickhouse } = require('../clickhouse.cjs');
+const { MergeTree } = require('../engines.cjs');
 
 module.exports.up = async function () {
   await clickhouse.command({
@@ -13,7 +14,7 @@ module.exports.up = async function () {
         timestamp UInt64,
         name String,
         event_attributes Nested (key String, value String),
-      ) ENGINE = MergeTree()
+      ) ENGINE = ${MergeTree}
       ORDER BY (timestamp, project_id, trace_id, span_id);
     `,
   });

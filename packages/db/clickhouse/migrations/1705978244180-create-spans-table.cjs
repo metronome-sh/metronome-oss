@@ -1,6 +1,7 @@
 'use strict';
 
 const { clickhouse } = require('../clickhouse.cjs');
+const { MergeTree } = require('../engines.cjs');
 
 module.exports.up = async function () {
   await clickhouse.command({
@@ -19,7 +20,7 @@ module.exports.up = async function () {
             value String
         ),
         INDEX project_idx project_id TYPE minmax GRANULARITY 4
-      ) ENGINE = MergeTree()
+      ) ENGINE = ${MergeTree}
       PARTITION BY toStartOfDay(toDateTime(start_time / 1000))
       ORDER BY (start_time, project_id, trace_id, span_id);  
     `,
