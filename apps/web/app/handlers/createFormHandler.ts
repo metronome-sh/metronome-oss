@@ -26,6 +26,10 @@ export async function createFormHandler({ request }: { request: Request }) {
     return formData.get(key) as string | undefined;
   }
 
+  function getAll(key: string): string[] {
+    return formData.getAll(key) as string[];
+  }
+
   function validate<T, S extends Schema<T>>(schema: S): z.infer<S> {
     const result = schema.safeParse(formDataObject);
 
@@ -39,5 +43,5 @@ export async function createFormHandler({ request }: { request: Request }) {
     return result.data;
   }
 
-  return { get, validate };
+  return { get, getAll, validate };
 }

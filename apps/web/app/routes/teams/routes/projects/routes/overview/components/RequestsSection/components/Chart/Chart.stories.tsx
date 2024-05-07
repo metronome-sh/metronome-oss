@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Chart } from '.';
 import { defer, json } from '@remix-run/node';
-import { requestsCountSeries, timeZone } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { requestsCountSeries, timeZone } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ overview/components/RequestsSection/components/Chart',
@@ -30,7 +30,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             json({
               requestsCountSeries,
@@ -51,7 +51,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               requestsCountSeries: new Promise(() => {}),
@@ -71,7 +71,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               requestsCountSeries: Promise.reject(),

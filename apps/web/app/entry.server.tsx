@@ -1,17 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-use-before-define */
-/**
- * By default, Remix will handle generating the HTTP Response for you.
- * You are free to delete this file if you'd like to, but if you ever want it revealed again, you can run `npx remix reveal` ✨
- * For more information, see https://remix.run/file-conventions/entry.server
- */
-
 import { PassThrough } from 'node:stream';
 
-import { type AppLoadContext, type EntryContext } from '@remix-run/node';
+import type { AppLoadContext, EntryContext } from '@remix-run/node';
 import { createReadableStreamFromReadable } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
-import isbot from 'isbot';
+import * as isbotModule from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 
 const ABORT_DELAY = 60_000;
@@ -23,19 +15,30 @@ export default function handleRequest(
   remixContext: EntryContext,
   loadContext: AppLoadContext,
 ) {
-  return isbot(request.headers.get('user-agent'))
-    ? handleBotRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext,
-      )
-    : handleBrowserRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext,
-      );
+  return isBotRequest(request.headers.get('user-agent'))
+    ? handleBotRequest(request, responseStatusCode, responseHeaders, remixContext)
+    : handleBrowserRequest(request, responseStatusCode, responseHeaders, remixContext);
+}
+
+// We have some Remix apps in the wild already running with isbot@3 so we need
+// to maintain backwards compatibility even though we want new apps to use
+// isbot@4.  That way, we can ship this as a minor Semver update to @remix-run/dev.
+function isBotRequest(userAgent: string | null) {
+  if (!userAgent) {
+    return false;
+  }
+
+  // isbot >= 3.8.0, >4
+  if ('isbot' in isbotModule && typeof isbotModule.isbot === 'function') {
+    return isbotModule.isbot(userAgent);
+  }
+
+  // isbot < 3.8.0
+  if ('default' in isbotModule && typeof isbotModule.default === 'function') {
+    return isbotModule.default(userAgent);
+  }
+
+  return false;
 }
 
 function handleBotRequest(
@@ -47,11 +50,7 @@ function handleBotRequest(
   return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
-      <RemixServer
-        context={remixContext}
-        url={request.url}
-        abortDelay={ABORT_DELAY}
-      />,
+      <RemixServer context={remixContext as any} url={request.url} abortDelay={ABORT_DELAY} />,
       {
         onAllReady() {
           shellRendered = true;
@@ -94,44 +93,10 @@ function handleBrowserRequest(
   responseHeaders: Headers,
   remixContext: EntryContext,
 ) {
-  /**
-   * Get the timezone offset from the browser and set it as a cookie if it
-   * doesn't exist.
-   */
-  if (!request.headers.get('cookie')?.includes('timeZone')) {
-    const script = `
-      <script>
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        document.cookie = 'timeZone=' + timeZone + '; path=/';
-        window.location.reload();
-      </script>
-    `;
-
-    return new Response(
-      `
-      <!doctype html>
-      <html>
-        <head></head>
-        <body>${script}</body>
-      </html>
-    `,
-      {
-        headers: {
-          'Content-Type': 'text/html',
-          Refresh: `0; url=${request.url}`,
-        },
-      },
-    );
-  }
-
   return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
-      <RemixServer
-        context={remixContext}
-        url={request.url}
-        abortDelay={ABORT_DELAY}
-      />,
+      <RemixServer context={remixContext} url={request.url} abortDelay={ABORT_DELAY} />,
       {
         onShellReady() {
           shellRendered = true;

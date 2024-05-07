@@ -1,0 +1,86 @@
+---
+title: 'Metronome + Remix Node + Vite'
+description: 'Installing Metronome Vite plugin for Remix in a Node.js environment'
+---
+
+# Setting up Metronome Vite plugin for Remix in a Node.js environment
+
+## Installation
+
+Start by installing `metronome-sh` package. This package includes all what you need to start using Metronome with Remix and Vite.
+
+```bash {% title="Terminal" %}
+npm install metronome-sh
+```
+
+## Configuration
+
+In your Remix `vite.config.ts` file, add the metronome plugin from `metronome-sh/vite`:
+
+```js {% title="vite.config.js" %}
+import { vitePlugin as remix } from "@remix-run/dev";
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+import { metronome } from "metronome-sh/vite";
+
+export default defineConfig({
+  plugins: [
+    remix(), 
+    tsconfigPaths(), 
+    metronome()
+  ],
+});
+```
+{% alert title="METRONOME_API_KEY" %}
+To be able to send data to Metronome, you need to provide your Metronome API key. You can do this by setting the `METRONOME_API_KEY` environment variable in your production server.
+{% /alert %}
+
+{% alert title="Uploading source maps to Metronome" %}
+If you're using the errors source map feature in Metronome, you need to provide your Metronome API key at build time to be able to upload the source maps. You can do this by setting the `METRONOME_API_KEY` environment variable in your build script.
+{% /alert %}
+
+Add the `METRONOME_API_KEY` environment variable in your production server. After you create a new project, you can find it in the settings section of your Metronome project.
+
+## Build and deploy
+
+Now you can build and deploy your project as usual.
+
+## Using self hosted Metronome
+If you're using Metronome self-hosted, you need to set your endpoint URL in the metronome plugin options:
+
+```js {% title="vite.config.js" %}
+import { vitePlugin as remix } from "@remix-run/dev";
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+import { metronome } from "metronome-sh/vite";
+
+export default defineConfig({
+  plugins: [
+    remix(), 
+    tsconfigPaths(), 
+    metronome({
+      endpoint: "https://metronome.yourdomain.com"
+    })
+  ],
+});
+```
+
+### Debugging and see the data sent to Metronome
+If you want to see the data that is sent to Metronome, you can set the `debug` prop to `true` in the metronome plugin options:
+
+```js {% title="vite.config.js" %}
+import { vitePlugin as remix } from "@remix-run/dev";
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+import { metronome } from "metronome-sh/vite";
+
+export default defineConfig({
+  plugins: [
+    remix(), 
+    tsconfigPaths(), 
+    metronome({
+      debug: true
+    })
+  ],
+});
+```

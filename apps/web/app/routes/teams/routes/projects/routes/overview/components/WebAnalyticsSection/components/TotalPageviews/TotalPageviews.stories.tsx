@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { TotalPageviews } from '.';
 import { json } from '@remix-run/node';
-import { project, pageviewsCount } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { project, pageviewsCount } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title:
@@ -15,7 +15,7 @@ const meta = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () => json({ project, pageviewsCount }),
         },
       ]);

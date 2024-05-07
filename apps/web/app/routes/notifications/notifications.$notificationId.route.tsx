@@ -1,8 +1,8 @@
-import { users } from '@metronome/db.server';
+import { users } from '@metronome/db';
 import { ActionFunctionArgs } from '@remix-run/node';
 import { invariant } from 'ts-invariant';
 
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { success } from '#app/responses';
 
 export async function action({ request, params }: ActionFunctionArgs) {

@@ -2,7 +2,7 @@ import { Link } from '@remix-run/react';
 import { type FunctionComponent, useEffect, useState } from 'react';
 
 import { Alert, Button, Icon, Input, Tooltip } from '#app/components';
-import { useTinyKeys } from '#app/hooks';
+import { useTinyKeys } from '#app/hooks/useTinyKeys';
 
 import { useTeamProjectLoaderData } from '../../../../hooks';
 
@@ -34,8 +34,8 @@ export const EmptyState: FunctionComponent = () => {
         <Icon.Rocket className="p-0.5" />
         <Alert.Title>Setting up your new project</Alert.Title>
         <Alert.Description>
-          To be able to start tracking your application, you need to add the
-          Metronome SDK to your Remix app.
+          To be able to start tracking your application, you need to add the Metronome SDK to your
+          Remix app.
           <div className="pt-2">
             <Link
               to="/docs"
@@ -111,8 +111,7 @@ export const EmptyState: FunctionComponent = () => {
         <Icon.Refresh className="animate-spin transform rotate-180 p-0.5" />
         <Alert.Title>Waiting for your first event</Alert.Title>
         <Alert.Description>
-          Once we receive your first event, this page will be updated with your
-          project data.
+          Once we receive your first event, this page will be updated with your project data.
         </Alert.Description>
       </Alert>
     </div>

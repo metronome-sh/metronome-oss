@@ -1,8 +1,8 @@
-import { pageviews, projects, sessions } from '@metronome/db.server';
+import { pageviews, projects, sessions } from '@metronome/db';
 import { type LoaderFunctionArgs } from '@remix-run/node';
 
 import { filters } from '#app/filters';
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { notFound, stream } from '#app/responses';
 import { isRangeWithinToday } from '#app/utils';
 

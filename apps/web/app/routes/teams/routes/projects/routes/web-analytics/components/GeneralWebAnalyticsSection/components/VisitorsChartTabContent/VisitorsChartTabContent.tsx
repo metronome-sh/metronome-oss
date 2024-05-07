@@ -1,4 +1,4 @@
-import { sessions } from '@metronome/db.server';
+import { sessions } from '@metronome/db';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Await, useLoaderData } from '@remix-run/react';
 import { type FunctionComponent, Suspense } from 'react';

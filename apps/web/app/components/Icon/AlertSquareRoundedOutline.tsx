@@ -1,10 +1,8 @@
 import { FunctionComponent } from 'react';
 
-import { Svg, SvgProps } from './Svg.tsx';
+import { Svg, SvgProps } from './Svg';
 
-export const AlertSquareRoundedOutline: FunctionComponent<SvgProps> = (
-  props,
-) => {
+export const AlertSquareRoundedOutline: FunctionComponent<SvgProps> = (props) => {
   return (
     <Svg {...props}>
       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>

@@ -1,4 +1,4 @@
-import { useEventRouteData } from '#app/hooks';
+import { useEventRouteData } from '#app/hooks/useEventRouteData';
 
 import { type loader } from '../../$teamSlug.$projectSlug.settings.route';
 

@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { env } from '@metronome/env.server';
+import { env } from '@metronome/env';
 import fetch from 'node-fetch';
 
 import { generateRemixFunction, generateRequest, generateWebVital } from './mocks';

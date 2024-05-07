@@ -1,4 +1,4 @@
-import { queues } from '@metronome/queues.server';
+import { queues } from '@metronome/queues';
 import { type ActionFunctionArgs } from '@remix-run/node';
 
 export async function action({ request }: ActionFunctionArgs) {

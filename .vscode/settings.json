@@ -1,7 +1,7 @@
 {
   "prettier.configPath": "./.prettierrc",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   }
   // "typescript.inlayHints.parameterNames.enabled": "all",
   // "typescript.inlayHints.variableTypes.suppressWhenTypeMatchesName": false,

@@ -22,8 +22,8 @@ import {
   useFormContext,
 } from 'react-hook-form';
 
-import { Label } from '../Label';
-import { Separator } from '../Separator';
+import { Label } from '../Label/index.ts';
+import { Separator } from '../Separator/index.ts';
 import { cn } from '../utils.ts';
 
 const Form: typeof FormProvider = FormProvider;
@@ -32,9 +32,7 @@ type FormItemContextValue = {
   id: string;
 };
 
-const FormItemContext = createContext<FormItemContextValue>(
-  {} as FormItemContextValue,
-);
+const FormItemContext = createContext<FormItemContextValue>({} as FormItemContextValue);
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -43,9 +41,7 @@ type FormFieldContextValue<
   name: TName;
 };
 
-const FormFieldContext = createContext<FormFieldContextValue>(
-  {} as FormFieldContextValue,
-);
+const FormFieldContext = createContext<FormFieldContextValue>({} as FormFieldContextValue);
 
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
@@ -116,18 +112,13 @@ FormLabel.displayName = 'FormLabel';
 const FormControl: ForwardRefExoticComponent<
   PropsWithoutRef<SlotProps> & RefAttributes<HTMLElement>
 > = forwardRef(({ ...props }, ref) => {
-  const { error, formItemId, formDescriptionId, formMessageId } =
-    useFormField();
+  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
   return (
     <Slot
       ref={ref}
       id={formItemId}
-      aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
-      }
+      aria-describedby={!error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`}
       aria-invalid={!!error}
       {...props}
     />
@@ -136,51 +127,43 @@ const FormControl: ForwardRefExoticComponent<
 
 FormControl.displayName = 'FormControl';
 
-const FormDescription = forwardRef<
-  HTMLParagraphElement,
-  HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => {
-  const { formDescriptionId } = useFormField();
+const FormDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, ...props }, ref) => {
+    const { formDescriptionId } = useFormField();
 
-  return (
-    <p
-      ref={ref}
-      id={formDescriptionId}
-      className={cn(
-        'text-[0.8rem] text-zinc-500 dark:text-zinc-400',
-        className,
-      )}
-      {...props}
-    />
-  );
-});
+    return (
+      <p
+        ref={ref}
+        id={formDescriptionId}
+        className={cn('text-[0.8rem] text-zinc-500 dark:text-zinc-400', className)}
+        {...props}
+      />
+    );
+  },
+);
 FormDescription.displayName = 'FormDescription';
 
-const FormMessage = forwardRef<
-  HTMLParagraphElement,
-  HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }, ref) => {
-  const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+const FormMessage = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, children, ...props }, ref) => {
+    const { error, formMessageId } = useFormField();
+    const body = error ? String(error?.message) : children;
 
-  if (!body) {
-    return null;
-  }
+    if (!body) {
+      return null;
+    }
 
-  return (
-    <p
-      ref={ref}
-      id={formMessageId}
-      className={cn(
-        'text-[0.8rem] font-medium text-red-500 dark:text-red-900',
-        className,
-      )}
-      {...props}
-    >
-      {body}
-    </p>
-  );
-});
+    return (
+      <p
+        ref={ref}
+        id={formMessageId}
+        className={cn('text-[0.8rem] font-medium text-red-500 dark:text-red-900', className)}
+        {...props}
+      >
+        {body}
+      </p>
+    );
+  },
+);
 FormMessage.displayName = 'FormMessage';
 
 export type FormSectionProps = {
@@ -188,17 +171,12 @@ export type FormSectionProps = {
   description?: string;
 };
 
-const FormSection: FunctionComponent<FormSectionProps> = ({
-  title,
-  description,
-}) => {
+const FormSection: FunctionComponent<FormSectionProps> = ({ title, description }) => {
   return (
     <div className="pb-1">
       <div>
         <h3 className="text-lg font-medium">{title}</h3>
-        {description ? (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        ) : null}
+        {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
       </div>
       <Separator className="mb-4" />
     </div>

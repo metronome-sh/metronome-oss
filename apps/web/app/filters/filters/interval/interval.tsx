@@ -1,14 +1,13 @@
 import { z } from 'zod';
 
 import { Icon } from '#app/components';
-import { type FilterObject } from '#app/filters/filters.types';
+import { type FilterDefinitionFunction } from '#app/filters/filters.types';
 
 import {
   areDatesInRange,
   isDateDifferenceWithinDays,
   isDifferenceGreaterThanDays,
 } from '../date-range/helpers';
-import { server } from './interval.server';
 import { type IntervalOptionIds, type IntervalParsed } from './interval.types';
 
 export const interval = () =>
@@ -16,7 +15,24 @@ export const interval = () =>
     filterId: 'interval',
     label: 'Interval',
     icon: Icon.Alarm,
-    server,
+    server: {
+      parse: (activeOption) => {
+        const [value] = activeOption.value;
+
+        switch (value) {
+          case 'hourly':
+            return 'hour';
+          case 'daily':
+            return 'day';
+          case 'weekly':
+            return 'week';
+          case 'monthly':
+            return 'month';
+          default:
+            throw new Error('Invalid interval');
+        }
+      },
+    },
     initial: 'hourly',
     options: [
       {
@@ -32,12 +48,7 @@ export const interval = () =>
               z.tuple([z.literal('last-seven-days')]),
               z.array(z.string().datetime()).refine(([from, to]) => {
                 if (!to || from === to) return true;
-                const isValid = areDatesInRange(
-                  new Date(from),
-                  new Date(to),
-                  1,
-                  7,
-                );
+                const isValid = areDatesInRange(new Date(from), new Date(to), 1, 7);
                 return isValid;
               }),
             ]);
@@ -56,15 +67,9 @@ export const interval = () =>
               z.tuple([z.literal('last-thirty-days')]),
               z.tuple([z.literal('this-month')]),
               z.tuple([z.literal('last-month')]),
-              z
-                .tuple([z.string().datetime(), z.string().datetime()])
-                .refine(([from, to]) => {
-                  return isDateDifferenceWithinDays(
-                    new Date(from),
-                    new Date(to),
-                    31,
-                  );
-                }),
+              z.tuple([z.string().datetime(), z.string().datetime()]).refine(([from, to]) => {
+                return isDateDifferenceWithinDays(new Date(from), new Date(to), 31);
+              }),
             ]);
           },
         },
@@ -78,11 +83,9 @@ export const interval = () =>
             return z.union([
               z.tuple([z.literal('this-month')]),
               z.tuple([z.literal('last-month')]),
-              z
-                .tuple([z.string().datetime(), z.string().datetime()])
-                .refine(([from, to]) => {
-                  return areDatesInRange(new Date(from), new Date(to), 31, 365);
-                }),
+              z.tuple([z.string().datetime(), z.string().datetime()]).refine(([from, to]) => {
+                return areDatesInRange(new Date(from), new Date(to), 31, 365);
+              }),
             ]);
           },
         },
@@ -95,18 +98,12 @@ export const interval = () =>
           'date-range': () => {
             return z.union([
               z.tuple([z.literal('this-year')]),
-              z
-                .tuple([z.string().datetime(), z.string().datetime()])
-                .refine(([from, to]) => {
-                  return isDifferenceGreaterThanDays(
-                    new Date(from),
-                    new Date(to),
-                    365,
-                  );
-                }),
+              z.tuple([z.string().datetime(), z.string().datetime()]).refine(([from, to]) => {
+                return isDifferenceGreaterThanDays(new Date(from), new Date(to), 365);
+              }),
             ]);
           },
         },
       },
     ],
-  }) satisfies FilterObject<IntervalOptionIds, IntervalParsed>;
+  }) satisfies FilterDefinitionFunction<IntervalOptionIds, IntervalParsed>;

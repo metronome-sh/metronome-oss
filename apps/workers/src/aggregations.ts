@@ -1,5 +1,5 @@
-import { refreshAggregation } from '@metronome/db.server';
-import { queues } from '@metronome/queues.server';
+import { refreshAggregation } from '@metronome/db';
+import { queues } from '@metronome/queues';
 
 export async function aggregations(job: typeof queues.aggregations.$inferJob) {
   const { data } = job;

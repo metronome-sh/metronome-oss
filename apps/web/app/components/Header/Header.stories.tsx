@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { json } from '@remix-run/node';
 
 import { Header } from '.';
-import React from 'react';
-import { unstable_createRemixStub as createRemixStub } from '@remix-run/testing';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
+import { user, projects } from '#storybook/stubs';
 
 const meta = {
   title: 'Header',
@@ -16,7 +17,7 @@ const meta = {
         {
           path: '/',
           Component: Story,
-          // loader: () => json({ user, projects, project: projects[3] }),
+          loader: () => json({ user, projects, project: projects[3] }),
         },
       ]);
       return <RemixStub />;

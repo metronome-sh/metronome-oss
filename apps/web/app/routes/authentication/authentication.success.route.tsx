@@ -1,6 +1,6 @@
 import { type LoaderFunctionArgs, redirect } from '@remix-run/node';
 
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { auth } = await handle(request);

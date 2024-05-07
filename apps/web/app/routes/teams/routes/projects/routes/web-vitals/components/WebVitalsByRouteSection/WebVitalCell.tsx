@@ -1,4 +1,4 @@
-import { WebVitalName } from '@metronome/db.server';
+import { WebVitalName } from '@metronome/db';
 import { FunctionComponent } from 'react';
 
 import { cn, Icon } from '#app/components';
@@ -11,7 +11,7 @@ export type WebVitalCellProps = {
 };
 
 export const WebVitalCell: FunctionComponent<WebVitalCellProps> = ({ value, name, score }) => {
-  if (!value || !score) {
+  if ((value !== 0 && !value) || !score) {
     return <span>-</span>;
   }
 

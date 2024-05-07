@@ -1,4 +1,4 @@
-import { requests } from '@metronome/db.server';
+import { requests } from '@metronome/db';
 import { Await, useLoaderData } from '@remix-run/react';
 import { type FunctionComponent } from 'react';
 import { Suspense } from 'react';

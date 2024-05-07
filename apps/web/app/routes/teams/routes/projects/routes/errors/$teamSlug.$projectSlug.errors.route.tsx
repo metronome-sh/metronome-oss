@@ -1,12 +1,13 @@
-import { projects, errors } from '@metronome/db.server';
-import { defer, LoaderFunctionArgs } from '@remix-run/node';
+import { projects, errors, users } from '@metronome/db';
+import { ActionFunctionArgs, defer, json, LoaderFunctionArgs } from '@remix-run/node';
 import { invariant } from 'ts-invariant';
 
 import { Breadcrumb, Heading, NotificationsOutlet } from '#app/components';
 import { Filters, filters } from '#app/filters';
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { notFound } from '#app/responses';
-import { useLoaderData } from '@remix-run/react';
+import { ErrorsList } from './components/ErrorsList';
+import { namedAction } from '#app/utils/namedAction';
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { teamSlug = '', projectSlug = '' } = params;
@@ -26,40 +27,59 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (!project) throw notFound();
 
-  const { interval, range } = await query.filters({
-    interval: filters.interval(),
-    range: filters.dateRange(),
+  const { range, status } = await query.filters({
+    range: filters.dateRangeWithAll(),
+    status: filters.errorStatus(),
   });
 
-  const projectErrors = errors.all({ project });
+  await users.update(user.id, { settings: { lastErrorVisitedAt: Date.now() } });
 
-  // const webVitalsOverview = webVitals.overview({
-  //   project,
-  //   range,
-  //   interval,
-  // });
+  const projectErrors = errors.all({ project, range, status });
 
-  // const webVitalsBreakdownByRoute = webVitals.breakdownByRoute({
-  //   project,
-  //   range,
-  //   interval,
-  // });
+  return defer({ projectErrors: projectErrors });
+}
 
-  // return defer({
-  //   webVitalsOverview,
-  //   webVitalsBreakdownByRoute,
-  // });
+export async function action({ request, params }: ActionFunctionArgs) {
+  const { teamSlug = '', projectSlug = '' } = params;
 
-  return defer({ projectErrors: await projectErrors });
+  invariant(teamSlug, 'teamSlug should be defined');
+  invariant(projectSlug, 'projectSlug should be defined');
+
+  const { auth, form } = await handle(request);
+
+  const user = await auth.user();
+
+  const project = await projects.findBySlugs({
+    teamSlug,
+    projectSlug,
+    userId: user.id,
+  });
+
+  if (!project) throw notFound();
+
+  const hashes = form.getAll('hashes');
+
+  invariant(hashes, 'hash should be defined');
+
+  return namedAction(request, {
+    async archive() {
+      await errors.archive({ project, hashes });
+      return json({ success: true });
+    },
+    async resolve() {
+      await errors.resolve({ project, hashes });
+      return json({ success: true });
+    },
+    async unresolve() {
+      await errors.unresolve({ project, hashes });
+      return json({ success: true });
+    },
+  });
 }
 
 export default function Component() {
-  const test = useLoaderData();
-
-  console.log({ test });
-
   return (
-    <div className="w-full flex-grow h-full">
+    <div className="w-full flex-grow flex flex-col">
       <Breadcrumb>Errors</Breadcrumb>
       <div className="mx-auto w-full rounded-lg">
         <NotificationsOutlet />
@@ -70,11 +90,10 @@ export default function Component() {
         />
       </div>
       <div className="pb-2">
-        {/* <Filters filters={[filters.dateRange(), filters.interval()]} /> */}
+        <Filters filters={[filters.dateRangeWithAll(), filters.errorStatus()]} />
       </div>
-      <div className="pt-4 px-4">
-        {/* <WebVitalsSection />
-        <WebVitalsByRouteSection /> */}
+      <div className="md:px-4 flex-grow flex flex-col">
+        <ErrorsList />
       </div>
     </div>
   );

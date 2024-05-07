@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react';
 
-import { Svg, SvgProps } from './Svg.tsx';
+import { Svg, SvgProps } from './Svg';
 
 export const BrandAndroid: FunctionComponent<SvgProps> = (props) => {
   return (

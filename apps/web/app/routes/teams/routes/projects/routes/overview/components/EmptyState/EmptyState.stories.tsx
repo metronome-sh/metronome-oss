@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { EmptyState } from '.';
+import { EmptyState } from './EmptyState';
 import { json } from '@remix-run/node';
-import { project } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { project } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ overview/components/EmptyState',
@@ -16,7 +16,7 @@ const meta = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () => json({ project }),
         },
       ]);

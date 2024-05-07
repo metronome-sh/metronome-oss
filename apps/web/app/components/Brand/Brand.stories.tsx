@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Brand } from '.';
-import { remixRootDecorator, mockUseFetcher } from '@metronome/storybook';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta: Meta<typeof Brand> = {
   title: 'Brand',
@@ -10,10 +10,16 @@ const meta: Meta<typeof Brand> = {
   },
   args: {},
   decorators: [
-    mockUseFetcher({
-      state: 'loading',
-    }),
-    remixRootDecorator,
+    (Story) => {
+      const RemixStub = createRemixStub([
+        {
+          path: '/1/1/settings',
+          Component: Story,
+        },
+      ]);
+
+      return <RemixStub initialEntries={['/1/1/settings']} />;
+    },
   ],
 };
 

@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { BounceRateTabTrigger } from '.';
 import { defer, json } from '@remix-run/node';
-import { bounceRate } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { bounceRate } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 import * as Tabs from '@radix-ui/react-tabs';
 
 const meta = {
@@ -165,7 +165,7 @@ export const Navigating: Story = {
               },
             },
           ],
-        }
+        },
       );
 
       return <RemixStub />;

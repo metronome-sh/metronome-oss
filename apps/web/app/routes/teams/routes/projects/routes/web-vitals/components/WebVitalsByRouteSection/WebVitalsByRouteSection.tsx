@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { webVitals } from '@metronome/db.server';
+import { webVitals } from '@metronome/db';
 import { Await, useLoaderData } from '@remix-run/react';
 import { FunctionComponent, Suspense } from 'react';
 import { invariant } from 'ts-invariant';

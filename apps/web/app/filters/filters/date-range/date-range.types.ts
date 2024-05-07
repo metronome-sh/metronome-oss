@@ -6,6 +6,7 @@ export interface DateRangeParsed {
 }
 
 export type DateRangeOptionIds =
+  | 'all'
   | 'today'
   | 'yesterday'
   | 'this-month'

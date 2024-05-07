@@ -19,9 +19,6 @@ COPY apps/web ./apps/web
 # Workers
 COPY apps/workers ./apps/workers
 
-# Cron
-COPY apps/cron ./apps/cron
-
 RUN pnpm i
 
 RUN pnpm build

@@ -1,0 +1,1 @@
+ALTER TABLE "errors_housekeeping" ADD CONSTRAINT "errors_housekeeping_project_id_hash_pk" PRIMARY KEY("project_id","hash");

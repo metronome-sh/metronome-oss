@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import TeamSlugCreateComponent from './$teamSlug.create.route';
 import { json } from '@remix-run/node';
-// import { project, projects, user } from '#/storybook/stubs';
-import { createRemixStub } from '#/storybook/mocks/createRemixStub.tsx';
+import { project, projects, team, user } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
+import { loader as rootLoader } from '../../root';
+import TeamComponent, { loader as teamLoader } from './$teamSlug.route';
 
 const meta = {
   title: 'Routes/:teamSlug ⁄ create/route',
@@ -16,17 +18,36 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Idle: Story = {
   decorators: [
     (Story) => {
       const RemixStub = createRemixStub([
         {
-          path: '/teamSlug/projectSlug/overview',
-          Component: Story,
+          id: 'root',
+          loader: async (): ReturnType<typeof rootLoader> => {
+            return json({ user, observableRoutes: [], timeZoneId: 'UTC' });
+          },
+          children: [
+            {
+              id: '$teamSlug',
+              path: '/teamSlug',
+              Component: TeamComponent,
+              loader: async (): ReturnType<typeof teamLoader> => {
+                return json({ team, projects, lastSelectedProjectSlug: null });
+              },
+              children: [
+                {
+                  id: '$teamSlug.create',
+                  path: '/teamSlug/create',
+                  Component: Story,
+                },
+              ],
+            },
+          ],
         },
       ]);
 
-      return <RemixStub initialEntries={['/teamSlug/projectSlug/overview']} />;
+      return <RemixStub initialEntries={['/teamSlug/create']} />;
     },
   ],
 };

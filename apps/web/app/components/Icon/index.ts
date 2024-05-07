@@ -23,11 +23,18 @@ import { CircleFilled } from './CircleFilled';
 import { Clipboard } from './Clipboard';
 import { ClipboardCheck } from './ClipboardCheck';
 import { ClipboardCopy } from './ClipboardCopy';
+import { ClockHourTwo } from './ClockHourTwo';
+import { Confetti } from './Confetti';
 import { DeviceDesktop } from './DeviceDesktop';
+import { Dots } from './Dots';
 import { Eye } from './Eye';
 import { EyeClosed } from './EyeClosed';
 import { FileText } from './FileText';
 import { Filter } from './Filter';
+import { Folder } from './Folder';
+import { FolderCheck } from './FolderCheck';
+import { FolderPause } from './FolderPause';
+import { FolderUp } from './FolderUp';
 import { Github } from './Github';
 import { Heartbeat } from './Heartbeat';
 import { HeartFilled } from './HeartFilled';
@@ -36,15 +43,19 @@ import { InfoSquareRounded } from './InfoSquareRounded';
 import { Key } from './Key';
 import { LoaderTwo } from './LoaderTwo';
 import { Menu } from './Menu';
+import { Monitor } from './Monitor';
 import { MoodSadDizzy } from './MoodSadDizzy';
 import { Quote } from './Quote';
 import { Refresh } from './Refresh';
+import { RemixLetterDark } from './RemixLetterDark';
 import { Rocket } from './Rocket';
 import { RotateTwo } from './RotateTwo';
 import { RouteSquareTwo } from './RouteSquareTwo';
 import { Search } from './Search';
+import { Server } from './Server';
 import { Settings } from './Settings';
 import { SettingsTwo } from './SettingsTwo';
+import { Slash } from './Slash';
 import { SquareFilled } from './SquareFilled';
 import { SquareRoundedPlus } from './SquareRoundedPlus';
 import { SquaresFilled } from './SquaresFilled';
@@ -58,62 +69,73 @@ import { World } from './World';
 import { X } from './X';
 
 export const Icon = {
-  X,
-  Bug,
-  Eye,
-  Sun,
-  Key,
-  Home,
-  Menu,
   Alarm,
-  World,
-  Check,
-  Quote,
-  Filter,
-  Rocket,
-  Search,
-  Github,
-  Refresh,
-  Calendar,
-  UserScan,
-  Settings,
-  FileText,
-  EyeClosed,
-  Heartbeat,
-  LoaderTwo,
-  BrandEdge,
-  Clipboard,
-  RotateTwo,
-  BrandLinux,
-  BrandOpera,
-  BrandApple,
-  BrandSafari,
-  BrandChrome,
-  HeartFilled,
-  TerminalTwo,
-  BrandUbuntu,
-  SettingsTwo,
-  BrandAndroid,
-  CircleFilled,
-  SquareFilled,
-  BrandFirefox,
-  BrandWindows,
-  ChevronRight,
-  MoodSadDizzy,
-  ClipboardCopy,
-  DeviceDesktop,
-  SquaresFilled,
-  ClipboardCheck,
-  RouteSquareTwo,
-  TriangleFilled,
-  CaretDownFilled,
+  AlertSquareRoundedOutline,
+  AlertTriangleFilled,
   ArrowNarrowLeft,
   ArrowNarrowRight,
-  InfoSquareRounded,
-  SquareRoundedPlus,
+  BrandAndroid,
+  BrandApple,
+  BrandChrome,
+  BrandEdge,
+  BrandFirefox,
+  BrandLinux,
+  BrandOpera,
+  BrandSafari,
+  BrandUbuntu,
+  BrandWindows,
+  Bug,
   BuildingLighthouse,
-  AlertTriangleFilled,
-  TriangleInvertedFilled,
+  Calendar,
+  CaretDownFilled,
+  Check,
+  ChevronRight,
+  CircleFilled,
+  Clipboard,
+  ClipboardCheck,
+  ClipboardCopy,
+  ClockHourTwo,
+  Confetti,
+  DeviceDesktop,
+  Dots,
+  Eye,
+  EyeClosed,
+  FileText,
+  Filter,
+  Folder,
+  FolderCheck,
+  FolderPause,
+  FolderUp,
+  Github,
+  Heartbeat,
+  HeartFilled,
+  Home,
+  InfoSquareRounded,
+  Key,
+  LoaderTwo,
+  Menu,
+  Monitor,
+  MoodSadDizzy,
+  Quote,
+  Refresh,
+  Rocket,
+  RotateTwo,
+  RouteSquareTwo,
+  Search,
+  Server,
+  Settings,
+  SettingsTwo,
+  Slash,
+  SquareFilled,
+  SquareRoundedPlus,
+  SquaresFilled,
+  Sun,
+  TerminalTwo,
   TimelineEventExclamation,
-  AlertSquareRoundedOutline,
+  TriangleFilled,
+  TriangleInvertedFilled,
+  UserScan,
+  World,
+  RemixLetterDark,
+  X,
 };

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { RoutesSectionUrlsTabContent } from '.';
-import { urlsList } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { urlsList } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 import * as Tabs from '@radix-ui/react-tabs';
 import { defer, json } from '@remix-run/node';
 
@@ -25,7 +25,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: (
+          Component: () => (
             <Tabs.Root defaultValue="urls">
               <div className="w-200 h-60">
                 <Story />
@@ -51,7 +51,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: (
+          Component: () => (
             <Tabs.Root defaultValue="urls">
               <div className="w-200 h-60">
                 <Story />
@@ -77,7 +77,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: (
+          Component: () => (
             <Tabs.Root defaultValue="urls">
               <div className="w-200 h-60">
                 <Story />
@@ -104,7 +104,7 @@ export const Navigating: Story = {
         [
           {
             path: '/',
-            element: (
+            Component: () => (
               <Tabs.Root defaultValue="urls">
                 <div className="w-200 h-60">
                   <Story />
@@ -141,7 +141,7 @@ export const Navigating: Story = {
               },
             },
           ],
-        }
+        },
       );
 
       return <RemixStub />;

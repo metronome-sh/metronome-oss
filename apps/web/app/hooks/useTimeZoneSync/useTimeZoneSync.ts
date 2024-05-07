@@ -1,5 +1,5 @@
 import { useLocation } from '@remix-run/react';
-import isbot from 'isbot';
+import { isbot } from 'isbot';
 import { useEffect } from 'react';
 
 export function useTimeZoneSync() {

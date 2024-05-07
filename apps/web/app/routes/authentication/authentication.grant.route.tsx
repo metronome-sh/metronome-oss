@@ -1,31 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { users } from '@metronome/db.server';
-import {
-  ActionFunctionArgs,
-  json,
-  LoaderFunctionArgs,
-  redirect,
-} from '@remix-run/node';
+import { users } from '@metronome/db';
+import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { useFetcher, useLoaderData } from '@remix-run/react';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import {
-  Alert,
-  Brand,
-  Button,
-  Card,
-  Container,
-  Form,
-  Icon,
-  Input,
-} from '#app/components';
-import { handle } from '#app/handlers';
+import { Alert, Brand, Button, Card, Container, Form, Icon, Input } from '#app/components';
+import { handle } from '#app/handlers/handle';
 
 export const AuthenticationSchema = z.object({
   email: z.string().email(),
-  password: z.string().nonempty(),
+  password: z.string().min(1),
 });
 
 export async function action({ request }: ActionFunctionArgs) {

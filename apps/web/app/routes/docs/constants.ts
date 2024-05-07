@@ -1,13 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 
-// When we change to vite this will be easier to deal with.
-// Read the package.json file and where imports.#app/* points to
-const packageJson = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf-8'),
-);
+export const getDocumentsPath = () => {
+  const cwd = process.cwd();
 
-export const DOCUMENTS_PATH = packageJson.imports['#app/*'].replace(
-  '*',
-  '/routes/docs/documents',
-);
+  const packageJson = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'), 'utf-8'));
+
+  const appDir = packageJson.imports['#app/*'];
+
+  const docsPath = path.resolve(cwd, appDir.replace('*', '/routes/docs/documents'));
+
+  return docsPath;
+};

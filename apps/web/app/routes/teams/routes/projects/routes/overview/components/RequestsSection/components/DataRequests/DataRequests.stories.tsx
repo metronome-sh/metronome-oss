@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { DataRequests } from '.';
 import { defer, json } from '@remix-run/node';
-import { requestsOverview } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { requestsOverview } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title:
@@ -22,7 +22,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             json({
               requestsOverview,
@@ -42,7 +42,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               requestsOverview: new Promise(() => {}),
@@ -62,7 +62,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               requestsOverview: Promise.reject(),

@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react';
 
-import { Svg, SvgProps } from './Svg.tsx';
+import { Svg, SvgProps } from './Svg';
 
 export const RouteSquareTwo: FunctionComponent<SvgProps> = (props) => {
   return (

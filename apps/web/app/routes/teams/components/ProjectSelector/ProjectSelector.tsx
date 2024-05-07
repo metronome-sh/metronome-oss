@@ -1,4 +1,4 @@
-import { Project } from '@metronome/db.server';
+import { Project } from '@metronome/db';
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 import { PopoverProps } from '@radix-ui/react-popover';
 import { SerializeFrom } from '@remix-run/node';

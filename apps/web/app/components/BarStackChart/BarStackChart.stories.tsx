@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { BarStackChart } from '.';
-import { createRemixStub } from '~/storybook/mocks';
-import { requestsCountSeries, timeZoneWithOffset } from '~/storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
+import { requestsCountSeries, timeZoneWithOffset } from '#storybook/stubs';
 import { json } from '@remix-run/node';
 
 const meta = {

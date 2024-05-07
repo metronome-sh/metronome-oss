@@ -1,1 +1,1 @@
-export { dateRange } from './date-range';
+export { dateRange, dateRangeWithAll } from './date-range';

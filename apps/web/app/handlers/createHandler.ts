@@ -1,4 +1,4 @@
-import { type User } from '@metronome/db.server';
+import { type User } from '@metronome/db';
 import { type Strategy } from 'remix-auth';
 
 import { createAuthHandler } from './createAuthHandler';

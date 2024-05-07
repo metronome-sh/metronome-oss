@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { DeleteProject } from '.';
 import { json } from '@remix-run/node';
-import { project, projects } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { project, projects } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title:
@@ -22,7 +22,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/1/1/settings',
-          element: <Story />,
+          Component: Story,
           loader: () => json({ project, projects }),
         },
       ]);
@@ -41,7 +41,7 @@ export const Open: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/1/1/settings',
-          element: <Story />,
+          Component: Story,
           loader: () => json({ project, projects }),
         },
       ]);
@@ -60,7 +60,7 @@ export const SingleProject: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/1/1/settings',
-          element: <Story />,
+          Component: Story,
           loader: () => json({ project, projects: [project] }),
         },
       ]);
@@ -80,14 +80,14 @@ export const Submitting: Story = {
         [
           {
             path: '/1/1/settings',
-            element: <Story />,
+            Component: Story,
             loader: () => json({ project, projects }),
           },
         ],
         {},
         {
           fetcher: { state: 'submitting' },
-        }
+        },
       );
 
       return <RemixStub initialEntries={['/1/1/settings']} />;
@@ -105,14 +105,14 @@ export const Success: Story = {
         [
           {
             path: '/1/1/settings',
-            element: <Story />,
+            Component: Story,
             loader: () => json({ project, projects }),
           },
         ],
         {},
         {
           fetcher: { state: 'idle', data: { success: true } },
-        }
+        },
       );
 
       return <RemixStub initialEntries={['/1/1/settings']} />;
@@ -130,14 +130,14 @@ export const Failure: Story = {
         [
           {
             path: '/1/1/settings',
-            element: <Story />,
+            Component: Story,
             loader: () => json({ project, projects }),
           },
         ],
         {},
         {
           fetcher: { state: 'idle', data: { success: false } },
-        }
+        },
       );
 
       return <RemixStub initialEntries={['/1/1/settings']} />;

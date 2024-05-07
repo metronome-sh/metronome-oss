@@ -32,7 +32,8 @@
     "import/consistent-type-specifier-style": ["warn", "prefer-inline"],
     "no-throw-literal": "off",
     "@typescript-eslint/no-throw-literal": "off",
-    "import/extensions": "off"
+    "import/extensions": "off",
+    "import/no-unresolved": "off"
   },
   "parserOptions": {
     "ecmaVersion": 2020,

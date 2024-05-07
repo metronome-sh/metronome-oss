@@ -2,7 +2,7 @@ import { useNavigate, useSearchParams } from '@remix-run/react';
 import { type FunctionComponent, useCallback, useMemo, useState } from 'react';
 
 import { Button, Icon } from '#app/components';
-import { type ActiveFilterOption, type FilterObject } from '#app/filters/filters.types';
+import { type ActiveFilterOption, type FilterDefinitionFunction } from '#app/filters/filters.types';
 import {
   analyzeDependencies as analyzeDependenciesPrimitive,
   getInitialFiltersOptions,
@@ -18,7 +18,7 @@ import { Filter } from '../Filter';
 export type FiltersProps = {
   // TODO fix typings
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filters: FilterObject<any, unknown>[];
+  filters: FilterDefinitionFunction<any, unknown>[];
 };
 
 export const Filters: FunctionComponent<FiltersProps> = ({ filters }) => {
@@ -97,7 +97,7 @@ export const Filters: FunctionComponent<FiltersProps> = ({ filters }) => {
   );
 
   return (
-    <div className="px-4 flex gap-2">
+    <div className="md:px-4 flex gap-2">
       <filtersContext.Provider
         value={{
           filters,

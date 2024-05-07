@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { RoutesSectionPathsTabContent } from '.';
-import { routesList } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { routesList } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 import * as Tabs from '@radix-ui/react-tabs';
 import { defer, json } from '@remix-run/node';
 
@@ -141,7 +141,7 @@ export const Navigating: Story = {
               },
             },
           ],
-        }
+        },
       );
 
       return <RemixStub />;

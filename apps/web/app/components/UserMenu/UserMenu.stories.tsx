@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { UserMenu } from '.';
-import { user } from '~/storybook/stubs';
+import { user } from '#storybook/stubs';
 import { json } from '@remix-run/node';
-import { createRemixStub } from '~/storybook/mocks';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Basic/User Menu',
@@ -16,7 +16,7 @@ const meta = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () => json({ user }),
         },
       ]);

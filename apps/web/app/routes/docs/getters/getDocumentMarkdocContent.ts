@@ -1,16 +1,15 @@
-import {
+import markdoc, {
   type Config as MarkdocConfig,
-  parse,
   type RenderableTreeNode,
   type Tag,
-  Tokenizer,
-  transform,
 } from '@markdoc/markdoc';
 import fs from 'fs/promises';
 import path from 'path';
 
-import { DOCUMENTS_PATH } from '../constants';
+import { getDocumentsPath } from '../constants';
 import { DocumentHeadings } from '../types';
+
+const { parse, Tokenizer, transform } = markdoc;
 
 async function checkFileExists(filePath: string) {
   try {
@@ -24,13 +23,13 @@ async function checkFileExists(filePath: string) {
 export async function getDocumentMarkdocContent(
   filename: string,
 ): Promise<{ content: RenderableTreeNode; headings: DocumentHeadings }> {
-  let fullPath = path.resolve(DOCUMENTS_PATH, filename);
+  let fullPath = path.resolve(getDocumentsPath(), filename);
 
   let exists = await checkFileExists(fullPath);
 
   if (!exists) {
     const dir = filename.replace('.mdoc', '');
-    fullPath = path.resolve(DOCUMENTS_PATH, dir, filename);
+    fullPath = path.resolve(getDocumentsPath(), dir, filename);
     exists = await checkFileExists(fullPath);
 
     if (!exists) {
@@ -48,9 +47,9 @@ export async function getDocumentMarkdocContent(
 
   // prettier-ignore
   const partials = {
-    'metronome-installation.partial.mdoc': parse(await fs.readFile(path.resolve(DOCUMENTS_PATH, 'partials/metronome-installation.partial.mdoc'), 'utf-8')),
-    'metronome-init.partial.mdoc': parse(await fs.readFile(path.resolve(DOCUMENTS_PATH, 'partials/metronome-init.partial.mdoc'), 'utf-8')),
-    'metronome-root-config.partial.mdoc': parse(await fs.readFile(path.resolve(DOCUMENTS_PATH, 'partials/metronome-root-config.partial.mdoc'), 'utf-8')),
+    'metronome-installation.partial.mdoc': parse(await fs.readFile(path.resolve(getDocumentsPath(), 'partials/metronome-installation.partial.mdoc'), 'utf-8')),
+    'metronome-init.partial.mdoc': parse(await fs.readFile(path.resolve(getDocumentsPath(), 'partials/metronome-init.partial.mdoc'), 'utf-8')),
+    'metronome-root-config.partial.mdoc': parse(await fs.readFile(path.resolve(getDocumentsPath(), 'partials/metronome-root-config.partial.mdoc'), 'utf-8')),
   };
 
   const config: MarkdocConfig = {

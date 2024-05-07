@@ -1,4 +1,4 @@
-import { User } from '@metronome/db.server';
+import type { User, Project, Team, ProjectError } from '@metronome/db';
 import { faker } from '@faker-js/faker';
 import { Temporal } from '@js-temporal/polyfill';
 
@@ -7,10 +7,7 @@ function getRandomInt(min: number, max: number): number {
 }
 
 function replacePlaceholdersWithRandomIds(route: string) {
-  const updatedRoute = route.replace(
-    /:(\w+)(?=\/|$)/g,
-    `${getRandomInt(1000, 4000)}`,
-  );
+  const updatedRoute = route.replace(/:(\w+)(?=\/|$)/g, `${getRandomInt(1000, 4000)}`);
   return updatedRoute;
 }
 
@@ -80,18 +77,7 @@ function generateRegionData() {
     'New South Wales',
   ];
 
-  const countryCodes = [
-    'CA',
-    'US',
-    'CA',
-    'US',
-    'US',
-    'DE',
-    'FR',
-    'RU',
-    'CN',
-    'AU',
-  ];
+  const countryCodes = ['CA', 'US', 'CA', 'US', 'US', 'DE', 'FR', 'RU', 'CN', 'AU'];
 
   return regions
     .map((region, index) => ({
@@ -129,9 +115,7 @@ function generateCityData() {
 function generateSeries(cb: () => Record<string, any>) {
   return {
     series: Array.from({ length: 24 }, (_, i) => {
-      const timestamp = Temporal.Now.zonedDateTimeISO(
-        timeZoneWithOffset.timeZone,
-      )
+      const timestamp = Temporal.Now.zonedDateTimeISO(timeZoneWithOffset.timeZone)
         .withPlainTime('00:00:00')
         .add({ hours: i })
         .toInstant().epochMilliseconds;
@@ -146,44 +130,66 @@ export const timeZoneWithOffset = {
   offset: '-06:00',
 };
 
-// export const user: User = {
-//   id: '1',
-//   name: 'John Doe',
-//   email: 'john@example.com',
-//   picture: 'https://avatar.vercel.sh/personal.png',
-//   createdAt: new Date(),
-//   updatedAt: new Date(),
-//   selectedEmail: 'john@example.cwom',
-//   settings: {},
-//   strategy: 'github',
-// };
+export const timeZone = timeZoneWithOffset.timeZone;
 
-// export const project: Project = {
-//   id: '1',
-//   name: 'Project 1',
-//   createdAt: new Date(),
-//   updatedAt: new Date(),
-//   description: 'My Project Description',
-//   url: 'https://remix.run',
-//   apiKey: '123',
-//   createdById: '1',
-//   clientVersion: '1.0.0',
-//   costLimit: 100,
-//   deleted: false,
-//   isNew: false,
-//   metadata: {},
-//   organizationId: '1',
-//   previousSalt: '123',
-//   salt: '456',
-//   visibility: 'PUBLIC',
-// };
+export const user: User = {
+  id: '1',
+  name: 'John Doe',
+  email: 'john@example.com',
+  avatar: 'https://avatar.vercel.sh/personal.png',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  settings: {
+    emails: ['john@example.com'],
+    selectedEmail: 'john@example.com',
+    customerId: null,
+  },
+  strategy: 'github',
+  strategyUserId: '123',
+  usersToTeams: [],
+};
 
-// // Just change project id and name 4 times
-// export const projects: Project[] = Array.from({ length: 4 }, (_, i) => ({
-//   ...project,
-//   id: `${i}`,
-//   name: `${faker.word.adverb()} ${faker.word.adjective()} ${faker.word.adjective()} ${faker.word.noun()}`,
-// }));
+export const team: Team = {
+  id: '1',
+  name: 'Team 1',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  createdBy: '1',
+  description: 'My Team Description',
+  settings: {
+    subscription: null,
+  },
+  slug: '123',
+};
+
+export const project: Project = {
+  id: '1',
+  name: 'Project 1',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  description: 'My Project Description',
+  url: 'https://remix.run',
+  apiKey: '123',
+  createdBy: '1',
+  clientVersion: '1.0.0',
+  deleted: false,
+  isNew: false,
+  previousSalt: '123',
+  salt: '456',
+  isPublic: true,
+  isUsingVite: true,
+  runtime: 'express',
+  shareSlug: '123',
+  slug: '123',
+  teamId: '1',
+};
+
+// Just change project id and name 4 times
+export const projects: Project[] = Array.from({ length: 4 }, (_, i) => ({
+  ...project,
+  id: `${i}`,
+  name: `${faker.word.adverb()} ${faker.word.adjective()} ${faker.word.adjective()} ${faker.word.noun()}`,
+}));
 
 export const emails = ['foo@example.com', 'bar@example.com'];
 
@@ -237,8 +243,7 @@ export const requestsCountSeries = {
       .add({ hours: i })
       .toInstant().epochMilliseconds;
 
-    const documentCount =
-      Math.random() < 0.5 ? 0 : Math.floor(Math.random() * 100);
+    const documentCount = Math.random() < 0.5 ? 0 : Math.floor(Math.random() * 100);
     const dataCount = Math.floor(Math.random() * 200);
 
     return {
@@ -263,16 +268,14 @@ export const actionsOverview = {
 
 export const loadersSeries = generateSeries(() => {
   const count = Math.floor(Math.random() * 100);
-  const erroredCount =
-    Math.random() < 0.75 ? 0 : Math.floor(Math.random() * 10);
+  const erroredCount = Math.random() < 0.75 ? 0 : Math.floor(Math.random() * 10);
   const okCount = Math.abs(count - erroredCount);
   return { count, erroredCount, okCount };
 });
 
 export const actionsSeries = generateSeries(() => {
   const count = Math.floor(Math.random() * 100);
-  const erroredCount =
-    Math.random() < 0.75 ? 0 : Math.floor(Math.random() * 10);
+  const erroredCount = Math.random() < 0.75 ? 0 : Math.floor(Math.random() * 10);
   const okCount = Math.abs(count - erroredCount);
   return { count, erroredCount, okCount };
 });
@@ -303,39 +306,34 @@ export const locationsByRegion = generateRegionData();
 
 export const locationsByCity = generateCityData();
 
+const randomSegment = (): string => {
+  const segments = [
+    'tasks',
+    'users',
+    'files',
+    'comments',
+    'projects',
+    'teams',
+    'notifications',
+    'settings',
+    'reports',
+    'dashboards',
+  ];
+  return segments[Math.floor(Math.random() * segments.length)];
+};
+
+// Function to generate a random route with placeholders
+const randomRouteWithPlaceholders = () => {
+  const hasId = Math.random() > 0.5;
+  const baseSegment = randomSegment();
+  const route = hasId ? `/${baseSegment}/:${baseSegment.slice(0, -1)}Id` : `/${baseSegment}`;
+
+  const detailOrAttachments = Math.random() > 0.5 ? 'detail' : 'attachments';
+  return hasId ? `${route}/${detailOrAttachments}` : route;
+};
+
 export const routesList = ((numRoutes: number) => {
-  const randomSegment = (): string => {
-    const segments = [
-      'tasks',
-      'users',
-      'files',
-      'comments',
-      'projects',
-      'teams',
-      'notifications',
-      'settings',
-      'reports',
-      'dashboards',
-    ];
-    return segments[Math.floor(Math.random() * segments.length)];
-  };
-
-  // Function to generate a random route with placeholders
-  const randomRouteWithPlaceholders = () => {
-    const hasId = Math.random() > 0.5;
-    const baseSegment = randomSegment();
-    const route = hasId
-      ? `/${baseSegment}/:${baseSegment.slice(0, -1)}Id`
-      : `/${baseSegment}`;
-
-    const detailOrAttachments = Math.random() > 0.5 ? 'detail' : 'attachments';
-    return hasId ? `${route}/${detailOrAttachments}` : route;
-  };
-
-  const routes = Array.from(
-    { length: numRoutes },
-    randomRouteWithPlaceholders,
-  ).map((route) => ({
+  const routes = Array.from({ length: numRoutes }, randomRouteWithPlaceholders).map((route) => ({
     route,
     count: getRandomInt(10, 2000),
   }));
@@ -400,3 +398,41 @@ export const osList = [
 ]
   .map((os) => ({ ...os, count: getRandomInt(10, 2000) }))
   .sort((a, b) => b.count - a.count);
+
+export const projectErrors: ProjectError[] = Array.from({ length: 10 }, (_, i) => {
+  const errors = [
+    { name: 'ReferenceError', message: 'Cannot read property "x" of undefined' },
+    { name: 'SyntaxError', message: 'Unexpected token' },
+    { name: 'RangeError', message: 'Invalid array length' },
+    { name: 'URIError', message: 'URI malformed' },
+    { name: 'TypeError', message: 'Cannot read property "x" of undefined' },
+  ];
+
+  const error = faker.helpers.arrayElement(errors);
+
+  return {
+    lastSeen: faker.date.past().getTime(),
+    firstSeen: faker.date.past().getTime(),
+    occurrences: faker.number.int({ min: 1, max: 100 }),
+    hash: faker.string.uuid(),
+    status: faker.helpers.arrayElement(['unresolved', 'resolved', 'archived']),
+    kind: faker.number.int({ min: 1, max: 5 }),
+    name: error.name,
+    message: error.message,
+    versions: Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, () =>
+      faker.string.alphanumeric(7).toLocaleLowerCase(),
+    ),
+    eventIds: Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, () =>
+      faker.string.uuid(),
+    ),
+    routeIds: [
+      ...new Set(
+        Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, () =>
+          randomRouteWithPlaceholders(),
+        ),
+      ),
+    ],
+  };
+});
+
+export const error = projectErrors[0];

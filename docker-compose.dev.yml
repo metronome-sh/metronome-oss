@@ -38,6 +38,45 @@ services:
     networks:
       - metronome-network
 
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest-alpine
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+      - "9009:9009"
+    environment:
+      POSTGRES_HOST: "db"
+      POSTGRES_SCHEMA: "public"
+      POSTGRES_PORT: "${DB_READ_PORT}"
+      POSTGRES_USER: "${DB_READ_USER}"
+      POSTGRES_PASSWORD: "${DB_READ_PASSWORD}"
+      POSTGRES_DATABASE: "${DB_READ_DATABASE}"
+      CLICKHOUSE_USER: "${CLICKHOUSE_USER}"
+      CLICKHOUSE_PASSWORD: "${CLICKHOUSE_PASSWORD}"
+      CLICKHOUSE_DB: "${CLICKHOUSE_DB}"
+    volumes:
+      - "clickhouse:/var/lib/clickhouse"
+      - "./packages/db/clickhouse/docker/postgres.xml.template:/etc/clickhouse-server/config.d/postgres.xml.template"
+      - "./packages/db/clickhouse/docker/entrypoint.sh:/entrypoint-patch.sh"
+    entrypoint: ["/entrypoint-patch.sh"]
+    networks:
+      - metronome-network
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9002:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: "${S3_ACCESS_KEY_ID}"
+      MINIO_ROOT_PASSWORD: "${S3_SECRET_ACCESS_KEY}"
+      MINIO_KMS_MASTER_KEY: "${S3_KMS_MASTER_KEY}"
+    command: server /data --console-address ":9001"
+    volumes:
+      - "minio:/data"
+    networks:
+      - metronome-network
+
 networks:
   metronome-network:
     driver: bridge
@@ -46,4 +85,8 @@ volumes:
   db:
     driver: local
   redis:
+    driver: local
+  clickhouse:
+      driver: local
+  minio:
     driver: local

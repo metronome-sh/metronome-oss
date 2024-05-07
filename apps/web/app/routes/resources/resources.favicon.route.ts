@@ -1,9 +1,11 @@
 import { type LoaderFunctionArgs } from '@remix-run/node';
-import { getFavicons } from 'favicon-thief';
+import faviconThief from 'favicon-thief';
 import * as mime from 'mime-types';
 
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { notFound } from '#app/responses';
+
+const { getFavicons } = faviconThief;
 
 const cache = new Map<string, string>();
 

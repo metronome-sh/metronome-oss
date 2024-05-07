@@ -13,6 +13,7 @@ export interface MetronomeConfig {
   apiKey?: string | null;
   ignoredRoutes?: (string | RegExp)[];
   ignoredPathnames?: (string | RegExp)[];
+  unstable_sourceMaps?: boolean;
   debug?: boolean;
 }
 ```
@@ -21,11 +22,12 @@ export interface MetronomeConfig {
 
 | Property         | Type                   | Default Value      |
 | :--------------- | :--------------------- | :----------------- |
-| endpoint         | `string`               |                    |
-| apiKey*          | `string`               |                    |
-| ignoredRoutes    | `(string \| RegExp)[]` |                    |
-| ignoredPathnames | `(string \| RegExp)[]` | `["/healthcheck"]` |
-| debug            | `boolean`              | `false`            |
+| endpoint            | `string`               |                    |
+| apiKey*             | `string`               |                    |
+| ignoredRoutes       | `(string \| RegExp)[]` |                    |
+| ignoredPathnames    | `(string \| RegExp)[]` | `["/healthcheck"]` |
+| unstable_sourceMaps | `boolean`              | `false`            |
+| debug               | `boolean`              | `false`            |
 
 {% alert %}
 Because Metronome configuration gets bundled with your server code, it's not recommended to use the apiKey property to set your api key. Instead, use the `METRONOME_API_KEY` environment variable.
@@ -58,6 +60,9 @@ This property controls the pathnames that will be ignored. Metronome will ignore
 
 ### ignoredRoutes
 This property controls the route ids that will be ignored. Metronome will ignore all loaders and actions that are equal or match the route name.
+
+### unstable_sourceMaps
+This property controls whether Metronome will send source maps to the server or not. This is useful when you're debugging your application and want to see the original source code in the Metronome dashboard.
 
 ### debug
 This property controls whether Metronome will log debug information to the console or not.

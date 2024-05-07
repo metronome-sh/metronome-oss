@@ -1,9 +1,9 @@
-import { pageviews, projects, sessions } from '@metronome/db.server';
+import { pageviews, projects, sessions } from '@metronome/db';
 import { defer, LoaderFunctionArgs } from '@remix-run/node';
 
 import { Breadcrumb, Heading, NotificationsOutlet } from '#app/components';
 import { Filters, filters } from '#app/filters';
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { notFound } from '#app/responses';
 
 import { GeneralWebAnalyticsSection, LocationsSection } from './components';

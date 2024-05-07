@@ -1,4 +1,4 @@
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 
 import { empty } from './empty';
 

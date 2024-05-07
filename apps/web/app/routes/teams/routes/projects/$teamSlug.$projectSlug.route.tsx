@@ -1,9 +1,9 @@
-import { projects, users } from '@metronome/db.server';
+import { errors, projects, users } from '@metronome/db';
 import { defer, type LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 
 import { Breadcrumb } from '#app/components';
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { notFound } from '#app/responses';
 import { checkForProjectClientUpdates } from '#app/utils';
 
@@ -37,7 +37,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const semver = checkForProjectClientUpdates(project.clientVersion || '0.0.0');
 
-  return defer({ project, semver });
+  const unseenErrorsCount = errors.unseenErrorsCount({ project, user });
+
+  return defer({ project, semver, unseenErrorsCount });
 }
 
 export default function Component() {

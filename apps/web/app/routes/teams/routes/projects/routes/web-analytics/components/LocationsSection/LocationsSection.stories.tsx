@@ -7,8 +7,8 @@ import {
   locationsByCountry,
   requestsCountSeries,
   requestsOverview,
-} from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+} from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ web-analytics/components/LocationsSection',
@@ -26,7 +26,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             json({
               locationsByCountry,
@@ -49,7 +49,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               requestsOverview: new Promise(() => {}),
@@ -72,7 +72,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               requestsOverview: Promise.reject(),
@@ -96,7 +96,7 @@ export const Navigating: Story = {
         [
           {
             path: '/',
-            element: <Story />,
+            Component: Story,
             loader: () =>
               json({
                 requestsOverview,
@@ -130,7 +130,7 @@ export const Navigating: Story = {
               },
             },
           ],
-        }
+        },
       );
 
       return <RemixStub />;

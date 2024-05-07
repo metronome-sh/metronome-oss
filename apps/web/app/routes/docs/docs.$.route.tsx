@@ -1,9 +1,9 @@
 import { type RenderableTreeNode } from '@markdoc/markdoc';
-import { projects } from '@metronome/db.server';
+import { projects } from '@metronome/db';
 import { defer, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 
 import { DocsHeader, Sidebar, SidebarContainer, TableOfContents } from './components';
 import { useMarkdoc } from './components/Markdoc';

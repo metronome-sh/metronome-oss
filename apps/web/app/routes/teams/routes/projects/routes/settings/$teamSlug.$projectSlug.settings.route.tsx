@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { type Project, projects, teams, usages } from '@metronome/db.server';
+import { type Project, projects, teams, usages } from '@metronome/db';
 import {
   type ActionFunctionArgs,
   defer,
@@ -10,7 +10,7 @@ import {
 import { z } from 'zod';
 
 import { Breadcrumb, Heading, NotificationsOutlet } from '#app/components';
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { notFound } from '#app/responses';
 import { namedAction } from '#app/utils';
 

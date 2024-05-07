@@ -1,4 +1,4 @@
-import { pageviews } from '@metronome/db.server';
+import { pageviews } from '@metronome/db';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Await, useLoaderData } from '@remix-run/react';
 import { type FunctionComponent } from 'react';

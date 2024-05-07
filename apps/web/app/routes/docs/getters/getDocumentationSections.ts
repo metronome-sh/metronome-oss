@@ -1,21 +1,20 @@
-import { parse, Tokenizer } from '@markdoc/markdoc';
-import { env } from '@metronome/env.server';
+import markdoc from '@markdoc/markdoc';
+import { env } from '@metronome/env';
 import fs from 'fs/promises';
 import yaml from 'js-yaml';
 import path from 'path';
 
-import { DOCUMENTS_PATH } from '../constants';
+import { getDocumentsPath } from '../constants';
 import { type DocumentSections } from '../types';
+
+const { parse, Tokenizer } = markdoc;
 
 let documentSections: DocumentSections = [];
 
 export async function getDocumentationSections(): Promise<DocumentSections> {
   if (env.production && documentSections.length > 0) return documentSections;
 
-  const source = await fs.readFile(
-    path.resolve(DOCUMENTS_PATH, 'index.mdoc'),
-    'utf-8',
-  );
+  const source = await fs.readFile(path.resolve(getDocumentsPath(), 'index.mdoc'), 'utf-8');
 
   const tokenizer = new Tokenizer({ allowComments: true });
 

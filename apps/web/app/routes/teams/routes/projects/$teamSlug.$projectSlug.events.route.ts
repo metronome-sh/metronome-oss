@@ -1,8 +1,8 @@
-import { projects } from '@metronome/db.server';
+import { errors, projects } from '@metronome/db';
 import { type LoaderFunctionArgs } from '@remix-run/node';
 import { invariant } from 'ts-invariant';
 
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { notFound, stream } from '#app/responses';
 import { checkForProjectClientUpdates } from '#app/utils';
 
@@ -27,17 +27,30 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     '$teamSlug.$projectSlug',
     request,
     async (send) => {
-      const cleanupProjectSemVer = await projects.watch(project, async ({ ts }) => {
-        const updatedProject = await projects.find(project.id);
+      // const cleanupProjectSemVer = await projects.watch(project, async ({ ts }) => {
+      //   const updatedProject = await projects.find(project.id);
 
-        invariant(updatedProject, `Cannot find project with id ${project.id}`);
+      //   invariant(updatedProject, `Cannot find project with id ${project.id}`);
 
-        const semver = await checkForProjectClientUpdates(updatedProject.clientVersion ?? '0.0.0');
-        send({ semver }, ts);
-      });
+      //   const semver = await checkForProjectClientUpdates(updatedProject.clientVersion ?? '0.0.0');
+
+      //   send({ semver }, ts);
+      // });
+
+      // const cleanupError = await errors.watch(project, async ({ ts }) => {
+      //   const pathname = new URL(request.url).searchParams.get('__pathname__') ?? '';
+
+      //   if (pathname.endsWith('errors')) return;
+
+      //   const unseenErrorsCount = await errors.unseenErrorsCount({ project, user });
+      //   send({ unseenErrorsCount }, ts);
+      // });
 
       return async function cleanup() {
-        await cleanupProjectSemVer();
+        await Promise.all([
+          // cleanupProjectSemVer(),
+          // cleanupError()
+        ]);
       };
     },
   );

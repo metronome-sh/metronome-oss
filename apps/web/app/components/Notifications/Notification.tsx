@@ -3,7 +3,8 @@ import { FunctionComponent, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { invariant } from 'ts-invariant';
 
-import { useIsomorphicLayoutEffect, useRootLoaderData } from '#app/hooks';
+import { useRootLoaderData } from '#app/hooks/useRootLoaderData';
+import { useIsomorphicLayoutEffect } from '#app/hooks/useIsomorphicLayoutEffect';
 
 export type NotificationProps = {
   notificationOutletId?: string;

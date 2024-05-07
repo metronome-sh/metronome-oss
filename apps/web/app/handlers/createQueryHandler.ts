@@ -1,10 +1,6 @@
 import { Schema, z } from 'zod';
 
-import {
-  FilterObject,
-  mergeFilterOptionsWithSearch,
-  toMap,
-} from '#app/filters';
+import { FilterObject, mergeFilterOptionsWithSearch, toMap } from '#app/filters';
 
 import { formatZodError } from './helpers';
 
@@ -21,12 +17,9 @@ export async function createQueryHandler({ request }: { request: Request }) {
 
     if (!result.success) {
       // eslint-disable-next-line @typescript-eslint/no-throw-literal
-      throw new Response(
-        `Invalid query data: ${JSON.stringify(formatZodError(result.error))}`,
-        {
-          status: 400,
-        },
-      );
+      throw new Response(`Invalid query data: ${JSON.stringify(formatZodError(result.error))}`, {
+        status: 400,
+      });
     }
 
     return result.data;
@@ -51,13 +44,11 @@ export async function createQueryHandler({ request }: { request: Request }) {
 
     // Conserve the order of the filters
     // TODO do this inside the mergeFilterOptionsWithSearch function instead
-    const options = mergeFilterOptionsWithSearch(search, filterObjects).sort(
-      (a, b) => {
-        const aIndex = ids.indexOf(a.filterId);
-        const bIndex = ids.indexOf(b.filterId);
-        return aIndex - bIndex;
-      },
-    );
+    const options = mergeFilterOptionsWithSearch(search, filterObjects).sort((a, b) => {
+      const aIndex = ids.indexOf(a.filterId);
+      const bIndex = ids.indexOf(b.filterId);
+      return aIndex - bIndex;
+    });
 
     const map = toMap(filterObjects);
 
@@ -68,11 +59,10 @@ export async function createQueryHandler({ request }: { request: Request }) {
       }),
     );
 
-    return Object.fromEntries(
-      parsed.map((p, i) => [filterEntries[i][0], p]),
-    ) as {
+    return Object.fromEntries(parsed.map((p, i) => [filterEntries[i][0], p])) as {
       [RK in keyof R]: Awaited<ReturnType<R[RK]['server']['parse']>>;
     };
   }
+
   return { get, filters, validate };
 }

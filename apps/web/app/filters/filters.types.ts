@@ -10,14 +10,12 @@ export interface CompatibleFilters {
 
 export interface FilterOption<OptionId> {
   optionId: OptionId;
+  hidden?: boolean;
   label: (active?: boolean) => ReactNode;
   value: () => string[];
   dependencies?: Record<
     string,
-    (
-      selfValue: string[],
-      dependencyValue: string[],
-    ) => boolean | Schema<unknown>
+    (selfValue: string[], dependencyValue: string[]) => boolean | Schema<unknown>
   >;
 }
 
@@ -28,14 +26,11 @@ export interface CustomFilterOption {
   validate?: (value: string[]) => boolean | Schema<unknown>;
   dependencies?: Record<
     string,
-    (
-      selfValue: string[],
-      dependencyValue: string[],
-    ) => boolean | Schema<unknown>
+    (selfValue: string[], dependencyValue: string[]) => boolean | Schema<unknown>
   >;
 }
 
-export interface FilterObject<OptionId extends string, ServerParse> {
+export interface FilterDefinitionFunction<OptionId extends string, ServerParse> {
   filterId: string;
   label: string;
   icon?: FunctionComponent;
@@ -66,7 +61,7 @@ export interface ServerFilterProps<Parses> {
     request: Request,
     // TODO - fix typings
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    filter: FilterObject<any, unknown>,
+    filter: FilterDefinitionFunction<any, unknown>,
   ) => Parses | Promise<Parses>;
 }
 

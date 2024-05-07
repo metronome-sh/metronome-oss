@@ -1,13 +1,13 @@
 import { SerializeFrom } from '@remix-run/node';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useEventContext } from '#app/events';
+import { useEventContext } from '#app/events/useEventContext';
 
 export function useEventRouteData<TData>(
   routeId: string,
+  deps?: unknown,
 ): Partial<Awaited<SerializeFrom<UnwrapDeferred<TData>>>> {
   const { eventTarget } = useEventContext();
-
   const [data, setData] = useState<Partial<UnwrapDeferred<TData>>>({});
   const timestampsRef = useRef<Record<string, number>>({});
 
@@ -37,7 +37,6 @@ export function useEventRouteData<TData>(
 
   useEffect(() => {
     eventTarget?.addEventListener(routeId, eventCallback as EventListenerOrEventListenerObject);
-
     return () => {
       eventTarget?.removeEventListener(
         routeId,
@@ -45,7 +44,7 @@ export function useEventRouteData<TData>(
       );
       setData({});
     };
-  }, [eventCallback, eventTarget, routeId]);
+  }, [eventCallback, eventTarget, routeId, deps]);
 
   return data as Partial<Awaited<SerializeFrom<UnwrapDeferred<TData>>>>;
 }

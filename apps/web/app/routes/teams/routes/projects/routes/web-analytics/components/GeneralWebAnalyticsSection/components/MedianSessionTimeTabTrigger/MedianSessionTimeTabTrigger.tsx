@@ -1,9 +1,9 @@
-import { sessions } from '@metronome/db.server';
+import { sessions } from '@metronome/db';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Await, useLoaderData } from '@remix-run/react';
 import { type FunctionComponent } from 'react';
 import { Suspense } from 'react';
-import invariant from 'ts-invariant';
+import { invariant } from 'ts-invariant';
 
 import { useEventData } from '#app/hooks/useEventData';
 import { Metric } from '#app/routes/teams/routes/projects/components/Metric';

@@ -9,7 +9,10 @@ export const BreadcrumbOutlet: FunctionComponent<BreadcrumbOutletProps> = ({
 }) => {
   return (
     <nav aria-label="breadcrumb" className="breadcrumb">
-      <ol className="flex gap-2" id={id} />
+      <ol
+        className="flex gap-2 [&>li:first-child>.breadcrumb-chevron]:hidden sm:[&>li:first-child>.breadcrumb-chevron]:block"
+        id={id}
+      />
     </nav>
   );
 };

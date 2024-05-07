@@ -1,5 +1,5 @@
-import { insertMetrics, Project, projects } from '@metronome/db.server';
-import { queues } from '@metronome/queues.server';
+import { insertMetrics, Project, projects } from '@metronome/db';
+import { queues } from '@metronome/queues';
 
 const projectsCache = new Map<string, Project>();
 

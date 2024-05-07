@@ -1,7 +1,7 @@
 import { type FunctionComponent } from 'react';
 
 import { cn } from '../utils.ts';
-import { BrandLogo } from './Brand.Logo';
+import { BrandLogo } from './Brand.Logo.tsx';
 
 export type BrandProps = {
   className?: string;

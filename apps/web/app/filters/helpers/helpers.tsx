@@ -5,16 +5,16 @@ import { type Schema } from 'zod';
 import {
   type ActiveFilterOption,
   type CustomFilterOption,
-  type FilterObject,
+  type FilterDefinitionFunction,
   type FilterOption,
   type FilterUpdate,
 } from '../filters.types';
 import { InvalidFilterValueError } from '../InvalidFilterValueError';
 
 const cache = new WeakMap<
-  FilterObject<any, unknown>[],
+  FilterDefinitionFunction<any, unknown>[],
   {
-    [k: string]: FilterObject<any, unknown>;
+    [k: string]: FilterDefinitionFunction<any, unknown>;
   }
 >();
 
@@ -31,24 +31,20 @@ function arraysEqual<T>(arr1: T[], arr2: T[]): boolean {
 }
 
 export function getIsCustomOption(
-  filters: FilterObject<any, unknown>[],
+  filters: FilterDefinitionFunction<any, unknown>[],
   option: ActiveFilterOption,
 ) {
-  const filtersMap = Object.fromEntries(
-    filters.map((filter) => [filter.filterId, filter]),
-  );
+  const filtersMap = Object.fromEntries(filters.map((filter) => [filter.filterId, filter]));
   const { options } = filtersMap[option.filterId];
   return !options.find((o) => arraysEqual(o.value(), option.value));
 }
 
-export function toMap(filters: FilterObject<any, unknown>[]) {
+export function toMap(filters: FilterDefinitionFunction<any, unknown>[]) {
   if (cache.has(filters)) {
-    return cache.get(filters) as { [k: string]: FilterObject<any, unknown> };
+    return cache.get(filters) as { [k: string]: FilterDefinitionFunction<any, unknown> };
   }
 
-  const map = Object.fromEntries(
-    filters.map((filter) => [filter.filterId, filter]),
-  );
+  const map = Object.fromEntries(filters.map((filter) => [filter.filterId, filter]));
 
   cache.set(filters, map);
 
@@ -72,7 +68,7 @@ export function valueToActiveFilterOption(
 }
 
 export function toFilterOption(
-  filters: FilterObject<any, unknown>[],
+  filters: FilterDefinitionFunction<any, unknown>[],
   option: ActiveFilterOption,
 ): FilterOption<unknown> | CustomFilterOption {
   const filter = filters.find((f) => f.filterId === option.filterId);
@@ -89,14 +85,10 @@ export function toFilterOption(
     return filter.custom;
   }
 
-  const filterOption = filter.options.find(
-    (o) => o.optionId === option.optionId,
-  );
+  const filterOption = filter.options.find((o) => o.optionId === option.optionId);
 
   if (!filterOption) {
-    throw new Error(
-      `Option [${option.optionId}] not found in filter [${option.filterId}]`,
-    );
+    throw new Error(`Option [${option.optionId}] not found in filter [${option.filterId}]`);
   }
 
   return filterOption;
@@ -114,9 +106,7 @@ export function toUrlSearchParamsString(
 
   const entries = options.reduce(
     (acc, option) => {
-      const entry = option.value.map(
-        (value) => [option.filterId, value] as [string, string],
-      );
+      const entry = option.value.map((value) => [option.filterId, value] as [string, string]);
       return [...acc, ...entry];
     },
     [] as [string, string][],
@@ -126,7 +116,7 @@ export function toUrlSearchParamsString(
 }
 
 export function depencenciesCollides(
-  filters: FilterObject<any, unknown>[],
+  filters: FilterDefinitionFunction<any, unknown>[],
   leftOption: ActiveFilterOption,
   rightOption: ActiveFilterOption,
 ): boolean {
@@ -137,15 +127,11 @@ export function depencenciesCollides(
   const leftActiveOption = toFilterOption(filters, leftOption);
 
   let dependencyFn:
-    | ((
-        selfValue: string[],
-        dependencyValue: string[],
-      ) => boolean | Schema<unknown>)
+    | ((selfValue: string[], dependencyValue: string[]) => boolean | Schema<unknown>)
     | undefined;
 
   if (leftIsCustomOption) {
-    dependencyFn =
-      leftOptionFilter.custom?.dependencies?.[rightOption.filterId];
+    dependencyFn = leftOptionFilter.custom?.dependencies?.[rightOption.filterId];
     // If there is no dependency, skip
     if (!dependencyFn) return false;
   } else {
@@ -168,7 +154,7 @@ export function depencenciesCollides(
 }
 
 export function analyzeDependencies(
-  filters: FilterObject<any, unknown>[],
+  filters: FilterDefinitionFunction<any, unknown>[],
   option: ActiveFilterOption,
   activeOptions: ActiveFilterOption[],
 ): { updates: FilterUpdate[] } {
@@ -192,7 +178,13 @@ export function analyzeDependencies(
     // If there is no active option, throw
     if (!filterActiveOption) {
       throw new Error(
-        `Filter [${filter.filterId}] passed in filters array needs to exist as an active option in activeOptions array`,
+        `Unable to find an option in [${filter.filterId}] filter that satistifes [${
+          option.filterId
+        }] with value(s) [${JSON.stringify(option.value)}] .
+        If these filters are not dependent on each other, make sure to remove the dependency at [${
+          option.filterId
+        }] filter.
+        Otherwise, make sure to select an option that satisfies the dependency.`,
       );
     }
 
@@ -207,11 +199,7 @@ export function analyzeDependencies(
     }
 
     const nextNonCollidingOption = filter.options.find((o) => {
-      return !depencenciesCollides(
-        filters,
-        option,
-        toActiveFilterOption(filter.filterId, o),
-      );
+      return !depencenciesCollides(filters, option, toActiveFilterOption(filter.filterId, o));
     });
 
     if (!nextNonCollidingOption) {
@@ -232,28 +220,23 @@ export function analyzeDependencies(
   return { updates };
 }
 
-export function getInitialFilterOption(filter: FilterObject<any, unknown>) {
+export function getInitialFilterOption(filter: FilterDefinitionFunction<any, unknown>) {
   const option = filter.options.find((o) => o.optionId === filter.initial);
 
-  if (!option)
-    throw new Error(`Filter [${filter.filterId}] has no initial option`);
+  if (!option) throw new Error(`Filter [${filter.filterId}] has no initial option`);
 
   return toActiveFilterOption(filter.filterId, option);
 }
 
-export function getInitialFiltersOptions(
-  filters: FilterObject<any, unknown>[],
-) {
+export function getInitialFiltersOptions(filters: FilterDefinitionFunction<any, unknown>[]) {
   return filters.map(getInitialFilterOption);
 }
 
 export function mergeFilterOptionsWithSearch(
   search: URLSearchParams,
-  filters: FilterObject<any, unknown>[],
+  filters: FilterDefinitionFunction<any, unknown>[],
 ): ActiveFilterOption[] {
-  const filtersMap = Object.fromEntries(
-    filters.map((filter) => [filter.filterId, filter]),
-  );
+  const filtersMap = Object.fromEntries(filters.map((filter) => [filter.filterId, filter]));
   const ids = filters.map((filter) => filter.filterId);
 
   // Get the entries only for the filters
@@ -299,10 +282,7 @@ export function mergeFilterOptionsWithSearch(
       isCustom: true,
     };
 
-    return [key, customOption] as [
-      key: string,
-      activeFilterOption: ActiveFilterOption,
-    ];
+    return [key, customOption] as [key: string, activeFilterOption: ActiveFilterOption];
   });
 
   const options = optionEntries.map(([, option]) => option);
@@ -310,16 +290,13 @@ export function mergeFilterOptionsWithSearch(
   const keys = optionEntries.map(([key]) => key);
 
   const derived = [
-    ...getInitialFiltersOptions(filters).filter(
-      (f) => !keys.includes(f.filterId),
-    ),
+    ...getInitialFiltersOptions(filters).filter((f) => !keys.includes(f.filterId)),
     ...options,
   ];
 
   optionEntries.forEach(([key, option]) => {
     const { updates } = analyzeDependencies(filters, option, options);
-    if (updates.length > 0)
-      throw new InvalidFilterValueError(key, option.value);
+    if (updates.length > 0) throw new InvalidFilterValueError(key, option.value);
   });
 
   return derived;

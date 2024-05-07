@@ -1,5 +1,5 @@
-import { type User } from '@metronome/db.server';
-import { users } from '@metronome/db.server';
+import { type User } from '@metronome/db';
+import { users } from '@metronome/db';
 import { redirect } from '@remix-run/node';
 import { Authenticator, Strategy } from 'remix-auth';
 import { FormStrategy } from 'remix-auth-form';
@@ -10,7 +10,7 @@ import { createSessionHandler } from './createSessionHandler';
 
 export const AuthFormSchema = z.object({
   email: z.string().email(),
-  password: z.string().nonempty(),
+  password: z.string().min(1),
 });
 
 export function createAuthHandler({

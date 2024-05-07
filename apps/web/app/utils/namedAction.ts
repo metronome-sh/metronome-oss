@@ -3,15 +3,12 @@ import { type TypedResponse } from '@remix-run/node';
 type ActionsRecord = Record<string, () => Promise<TypedResponse<unknown>>>;
 
 type ResponsesRecord<Actions extends ActionsRecord> = {
-  [Action in keyof Actions]: Actions[Action] extends () => Promise<
-    TypedResponse<infer Result>
-  >
+  [Action in keyof Actions]: Actions[Action] extends () => Promise<TypedResponse<infer Result>>
     ? Result
     : never;
 };
 
-type ResponsesUnion<Actions extends ActionsRecord> =
-  ResponsesRecord<Actions>[keyof Actions];
+type ResponsesUnion<Actions extends ActionsRecord> = ResponsesRecord<Actions>[keyof Actions];
 
 function findNameInURL(searchParams: URLSearchParams) {
   for (const key of searchParams.keys()) {
@@ -79,24 +76,8 @@ async function getActionName(
  * @throws {ReferenceError} Action name not found
  * @throws {ReferenceError} Action "${name}" not found
  */
-export function namedAction<Actions extends ActionsRecord>(
-  request: Request,
-  actions: Actions,
-): Promise<TypedResponse<ResponsesUnion<Actions>>>;
-export function namedAction<Actions extends ActionsRecord>(
-  url: URL,
-  actions: Actions,
-): Promise<TypedResponse<ResponsesUnion<Actions>>>;
-export function namedAction<Actions extends ActionsRecord>(
-  searchParams: URLSearchParams,
-  actions: Actions,
-): Promise<TypedResponse<ResponsesUnion<Actions>>>;
-export function namedAction<Actions extends ActionsRecord>(
-  formData: FormData,
-  actions: Actions,
-): Promise<TypedResponse<ResponsesUnion<Actions>>>;
 export async function namedAction<Actions extends ActionsRecord>(
-  input: Request | URL | URLSearchParams | FormData,
+  input: Request,
   actions: Actions,
 ): Promise<TypedResponse<ResponsesUnion<Actions>>> {
   const name = await getActionName(input);
@@ -106,9 +87,7 @@ export async function namedAction<Actions extends ActionsRecord>(
   }
 
   if (name === null && 'default' in actions) {
-    return actions.default() as unknown as TypedResponse<
-      ResponsesUnion<Actions>
-    >;
+    return actions.default() as unknown as TypedResponse<ResponsesUnion<Actions>>;
   }
 
   if (name === null) throw new ReferenceError('Action name not found');

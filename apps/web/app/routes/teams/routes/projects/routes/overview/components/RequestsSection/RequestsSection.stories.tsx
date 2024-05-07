@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { RequestsSection } from '.';
 import { defer, json } from '@remix-run/node';
-import { requestsCountSeries, requestsOverview } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { requestsCountSeries, requestsOverview } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ overview/components/RequestsSection',
@@ -21,7 +21,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             json({
               requestsOverview,
@@ -42,7 +42,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               requestsOverview: new Promise(() => {}),
@@ -63,7 +63,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               requestsOverview: Promise.reject(),
@@ -85,7 +85,7 @@ export const Navigating: Story = {
         [
           {
             path: '/',
-            element: <Story />,
+            Component: Story,
             loader: () =>
               json({
                 requestsOverview,
@@ -117,7 +117,7 @@ export const Navigating: Story = {
               },
             },
           ],
-        }
+        },
       );
 
       return <RemixStub />;

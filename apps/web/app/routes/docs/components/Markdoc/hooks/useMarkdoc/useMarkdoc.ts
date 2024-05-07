@@ -1,7 +1,9 @@
 import { type RenderableTreeNodes } from '@markdoc/markdoc';
-import { renderers } from '@markdoc/markdoc';
+import markdoc from '@markdoc/markdoc';
 // eslint-disable-next-line import/default
 import React, { useMemo } from 'react';
+
+const { renderers } = markdoc;
 
 import {
   Button,

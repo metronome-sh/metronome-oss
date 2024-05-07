@@ -1,4 +1,4 @@
-import { useIsNavigating } from '#app/hooks';
+import { useIsNavigating } from '#app/hooks/useIsNavigating';
 
 const routeId = '$teamSlug.$projectSlug.web-vitals';
 

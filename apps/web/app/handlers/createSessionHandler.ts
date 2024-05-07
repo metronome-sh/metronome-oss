@@ -1,4 +1,4 @@
-import { env } from '@metronome/env.server';
+import { env } from '@metronome/env';
 import { type SessionStorage } from '@remix-run/node';
 import { createCookieSessionStorage } from '@remix-run/node';
 

@@ -1,17 +1,10 @@
-import { users } from '@metronome/db.server';
-import {
-  LoaderFunctionArgs,
-  type MetaFunction,
-  redirect,
-} from '@remix-run/node';
+import { users } from '@metronome/db';
+import { LoaderFunctionArgs, type MetaFunction, redirect } from '@remix-run/node';
 
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: 'Metronome' },
-    { name: 'description', content: 'Remix Analytics' },
-  ];
+  return [{ title: 'Metronome' }, { name: 'description', content: 'Remix Analytics' }];
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {

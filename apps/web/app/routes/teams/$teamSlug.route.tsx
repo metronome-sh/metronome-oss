@@ -1,9 +1,9 @@
-import { projects, teams, users } from '@metronome/db.server';
+import { projects, teams, users } from '@metronome/db';
 import { json, type LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 
 import { Container } from '#app/components';
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { notFound } from '#app/responses';
 
 import { TeamsHeader } from './components';

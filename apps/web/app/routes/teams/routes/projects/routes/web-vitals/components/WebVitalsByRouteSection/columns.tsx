@@ -1,4 +1,4 @@
-import { ScoredWebVital, WebVitalName } from '@metronome/db.server';
+import { ScoredWebVital, WebVitalName } from '@metronome/db';
 import { ColumnDef } from '@tanstack/react-table';
 
 import { RouteDisplay } from '#app/components';

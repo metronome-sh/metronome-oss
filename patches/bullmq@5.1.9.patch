@@ -1,0 +1,46 @@
+diff --git a/dist/esm/commands/script-loader.js b/dist/esm/commands/script-loader.js
+index e0a4d00aed890348a8f8dda6d4916b9c13fcf714..d6e3eb7b3f034b7d90698f2674879d67c1b57e11 100644
+--- a/dist/esm/commands/script-loader.js
++++ b/dist/esm/commands/script-loader.js
+@@ -3,11 +3,16 @@ import { glob, hasMagic } from 'glob';
+ import * as path from 'path';
+ import * as fs from 'fs';
+ import { promisify } from 'util';
++import { fileURLToPath } from 'url';
+ const readFile = promisify(fs.readFile);
+ const readdir = promisify(fs.readdir);
+ const GlobOptions = { dot: true, silent: false };
+ const IncludeRegex = /^[-]{2,3}[ \t]*@include[ \t]+(["'])(.+?)\1[; \t\n]*$/m;
+ const EmptyLineRegex = /^\s*[\r\n]/gm;
++
++const __filename = fileURLToPath(import.meta.url);
++const __dirname = path.dirname(__filename);
++
+ export class ScriptLoaderError extends Error {
+     constructor(message, path, stack = [], line, position = 0) {
+         super(message);
+@@ -349,15 +354,15 @@ async function getFilenamesByPattern(pattern) {
+ // Determine the project root
+ // https://stackoverflow.com/a/18721515
+ function getPkgJsonDir() {
+-    for (const modPath of module.paths || []) {
+-        try {
+-            const prospectivePkgJsonDir = path.dirname(modPath);
+-            fs.accessSync(modPath, fs.constants.F_OK);
+-            return prospectivePkgJsonDir;
+-            // eslint-disable-next-line no-empty
+-        }
+-        catch (e) { }
+-    }
++    // for (const modPath of module.paths || []) {
++    //     try {
++    //         const prospectivePkgJsonDir = path.dirname(modPath);
++    //         fs.accessSync(modPath, fs.constants.F_OK);
++    //         return prospectivePkgJsonDir;
++    //         // eslint-disable-next-line no-empty
++    //     }
++    //     catch (e) { }
++    // }
+     return '';
+ }
+ // https://stackoverflow.com/a/66842927

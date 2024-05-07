@@ -5,7 +5,8 @@ import { invariant } from 'ts-invariant';
 import { loader } from '../../$teamSlug.$projectSlug.route';
 
 export function useTeamProjectLoaderData(): SerializeFrom<typeof loader> {
-  const data = useRouteLoaderData<typeof loader>('$teamSlug.$projectSlug');
-  invariant(data, `Route loader data for route $teamSlug is undefined.`);
+  const id = '$teamSlug.$projectSlug';
+  const data = useRouteLoaderData<typeof loader>(id);
+  invariant(data, `Route loader data for route ${id} is undefined.`);
   return data;
 }

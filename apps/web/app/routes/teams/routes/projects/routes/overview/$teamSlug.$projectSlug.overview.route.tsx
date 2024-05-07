@@ -6,14 +6,14 @@ import {
   requests,
   sessions,
   webVitals,
-} from '@metronome/db.server';
+} from '@metronome/db';
 import { defer, type LoaderFunctionArgs } from '@remix-run/node';
 import { useRevalidator } from '@remix-run/react';
 import { useEffect } from 'react';
 
 import { Breadcrumb, Heading, NotificationsOutlet } from '#app/components';
 import { Filters, filters } from '#app/filters';
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 import { notFound } from '#app/responses';
 
 import {
@@ -154,7 +154,7 @@ export default function Component() {
         <div className="px-2 space-y-4">
           <WebAnalyticsSection />
           <WebVitalsSection />
-          <RequestsSection />
+          {/* <RequestsSection /> */}
           <LoadersSection />
           <ActionsSection />
         </div>

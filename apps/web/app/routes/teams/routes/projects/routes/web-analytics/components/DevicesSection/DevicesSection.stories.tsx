@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { DevicesSection } from '.';
 import { defer, json } from '@remix-run/node';
-import { browsersList, osList } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { browsersList, osList } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ web-analytics/components/DevicesSection',
@@ -21,7 +21,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             json({
               browsersList,
@@ -42,7 +42,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               browsersList: new Promise(() => {}),
@@ -63,7 +63,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               browsersList: Promise.reject(),
@@ -84,7 +84,7 @@ export const Navigating: Story = {
         [
           {
             path: '/',
-            element: <Story />,
+            Component: Story,
             loader: () =>
               json({
                 browsersList,
@@ -116,7 +116,7 @@ export const Navigating: Story = {
               },
             },
           ],
-        }
+        },
       );
 
       return <RemixStub />;

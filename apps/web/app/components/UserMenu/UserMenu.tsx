@@ -1,7 +1,7 @@
 import { useSubmit } from '@remix-run/react';
 import { type FunctionComponent, PropsWithChildren } from 'react';
 
-import { useRootLoaderData } from '#app/hooks';
+import { useRootLoaderData } from '#app/hooks/useRootLoaderData';
 
 import { Avatar, Button, DropdownMenu } from '..';
 
@@ -14,7 +14,7 @@ export const UserMenu: FunctionComponent<PropsWithChildren> = ({ children }) => 
   return (
     <DropdownMenu modal={false}>
       <DropdownMenu.Trigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full flex items-center">
           <Avatar className="h-8 w-8">
             <Avatar.Image src={user.avatar || ''} alt={user.name} />
             <Avatar.Fallback>{user.name.at(0)?.toLocaleUpperCase()}</Avatar.Fallback>

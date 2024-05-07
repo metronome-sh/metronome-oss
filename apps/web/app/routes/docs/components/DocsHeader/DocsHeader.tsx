@@ -2,7 +2,7 @@ import { Await, Link } from '@remix-run/react';
 import { type FunctionComponent, Suspense, useRef } from 'react';
 
 import { Avatar, Brand, Button, Icon, ScrollArea, Sheet, UserMenu } from '#app/components';
-import { useRootLoaderData } from '#app/hooks';
+import { useRootLoaderData } from '#app/hooks/useRootLoaderData';
 
 import { useDocsLoaderData } from '../../hooks/useDocsLoaderData';
 import { Sidebar } from '..';

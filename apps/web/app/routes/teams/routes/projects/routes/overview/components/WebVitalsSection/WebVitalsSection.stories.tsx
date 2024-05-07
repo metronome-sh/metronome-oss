@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { WebVitalsSection } from '.';
 import { defer, json } from '@remix-run/node';
 import { webVitalsOverview } from '#app/storybook/stubs';
-import { createRemixStub } from '#app/storybook/mocks';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ overview/components/WebVitalsSection',
@@ -21,7 +21,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             json({
               webVitalsOverview,
@@ -41,7 +41,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               webVitalsOverview: new Promise(() => {}),
@@ -61,7 +61,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               webVitalsOverview: Promise.reject(),

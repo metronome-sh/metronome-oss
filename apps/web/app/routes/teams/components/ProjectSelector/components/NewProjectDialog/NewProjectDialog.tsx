@@ -7,9 +7,9 @@ import { useForm } from 'react-hook-form';
 import { Button, Dialog, Form, Input } from '#app/components';
 
 import {
-  CreateProjectSchema,
+  createProjectSchema,
   CreateProjectSchemaType,
-} from '../../../../$teamSlug.create.route';
+} from '../../../../schemas/_createProjectSchema';
 
 export type NewProjectDialogProps = PropsWithChildren<{
   open: boolean;
@@ -22,7 +22,7 @@ export const NewProjectDialog: FunctionComponent<NewProjectDialogProps> = ({
   children,
 }) => {
   const form = useForm<CreateProjectSchemaType>({
-    resolver: zodResolver(CreateProjectSchema),
+    resolver: zodResolver(createProjectSchema),
     resetOptions: {
       keepErrors: false,
       keepDefaultValues: true,
@@ -70,15 +70,10 @@ export const NewProjectDialog: FunctionComponent<NewProjectDialogProps> = ({
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>New Project</Dialog.Title>
-          <Dialog.Description>
-            Add a new project to track its performance.
-          </Dialog.Description>
+          <Dialog.Description>Add a new project to track its performance.</Dialog.Description>
         </Dialog.Header>
         <Form.Provider {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <Form.Field
               control={form.control}
               name="name"

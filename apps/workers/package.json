@@ -3,8 +3,7 @@
   "version": "4.0.0",
   "author": "Erick Tamayo",
   "license": "FSL-1.0-MIT",
-  "main": "./dist/cjs/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "start": "tsx src/index.ts"
@@ -15,9 +14,11 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@metronome/db.server": "workspace:*",
-    "@metronome/env.server": "workspace:*",
-    "@metronome/queues.server": "workspace:*",
+    "@metronome/cache": "workspace:*",
+    "@metronome/db": "workspace:*",
+    "@metronome/env": "workspace:*",
+    "@metronome/queues": "workspace:*",
+    "ts-invariant": "^0.10.3",
     "tsx": "^3.14.0"
   }
 }

@@ -10,9 +10,10 @@ import { type SeriesPoint } from '@visx/shape/lib/types';
 import { useTooltip, useTooltipInPortal } from '@visx/tooltip';
 import { type FunctionComponent, type ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';
+import { ClientOnly } from 'remix-utils/client-only';
 
 import { filters, useFilterActiveOption } from '#app/filters';
-import { useTimezoneId } from '#app/hooks';
+import { useTimezoneId } from '#app/hooks/useTimezoneId';
 
 import { Icon } from '..';
 import { Spinner } from '../Spinner';
@@ -40,20 +41,14 @@ export type BarStackProps<T extends string | number> = {
   margin?: { top: number; right: number; bottom: number; left: number };
   events?: boolean;
   data: BarStackSeriesData<T>;
-  labels: Record<
-    Exclude<T, 'timestamp'>,
-    ReactNode | ((value: number | null) => ReactNode)
-  >;
-  formatValues?: Record<
-    Exclude<T, 'timestamp'>,
-    (value: number | null) => ReactNode
-  >;
+  labels: Record<Exclude<T, 'timestamp'>, ReactNode | ((value: number | null) => ReactNode)>;
+  formatValues?: Record<Exclude<T, 'timestamp'>, (value: number | null) => ReactNode>;
   colors: string[];
 };
 
 const defaultMargin = { top: 0, right: 0, bottom: 0, left: 0 };
 
-const Root = <T extends string | number>({
+const BaseComponent = <T extends string | number>({
   events = false,
   margin = defaultMargin,
   data,
@@ -61,14 +56,8 @@ const Root = <T extends string | number>({
   colors,
   formatValues,
 }: BarStackProps<T>) => {
-  const {
-    tooltipOpen,
-    tooltipLeft,
-    tooltipTop,
-    tooltipData,
-    hideTooltip,
-    showTooltip,
-  } = useTooltip<TooltipData<T>>();
+  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } =
+    useTooltip<TooltipData<T>>();
 
   const { containerRef, TooltipInPortal } = useTooltipInPortal({
     // TooltipInPortal is rendered in a separate child of <body /> and positioned
@@ -77,10 +66,7 @@ const Root = <T extends string | number>({
     scroll: true,
   });
 
-  const keys = useMemo(
-    () => Object.keys(data[0]).filter((d) => d !== 'timestamp') as T[],
-    [data],
-  );
+  const keys = useMemo(() => Object.keys(data[0]).filter((d) => d !== 'timestamp') as T[], [data]);
 
   const valueTotals = useMemo(
     () =>
@@ -106,10 +92,7 @@ const Root = <T extends string | number>({
 
   const formatDate = useCallback(
     (timestamp: number, tooltip: boolean = false) => {
-      const date =
-        Temporal.Instant.fromEpochMilliseconds(timestamp).toZonedDateTimeISO(
-          timeZoneId,
-        );
+      const date = Temporal.Instant.fromEpochMilliseconds(timestamp).toZonedDateTimeISO(timeZoneId);
       const [value] = interval.value;
       const [range] = dateRange.value;
 
@@ -240,8 +223,7 @@ const Root = <T extends string | number>({
                           fill={bar.color}
                           // rx={barStack.index === 1 ? '8' : undefined}
                           onClick={() => {
-                            if (events)
-                              alert(`clicked: ${JSON.stringify(bar)}`);
+                            if (events) alert(`clicked: ${JSON.stringify(bar)}`);
                           }}
                           onMouseLeave={() => {
                             tooltipTimeout = window.setTimeout(() => {
@@ -300,27 +282,18 @@ const Root = <T extends string | number>({
                 style={{ backgroundColor: colorScale(tooltipData.key) }}
               />
               <span className="pl-1">
-                {getFormattedValue(
-                  tooltipData.key,
-                  tooltipData.bar.data[tooltipData.key],
-                )}
+                {getFormattedValue(tooltipData.key, tooltipData.bar.data[tooltipData.key])}
               </span>
-              {tooltipData.bar.data[tooltipData.key] !=
-              valueTotals[tooltipData.index] ? (
+              {tooltipData.bar.data[tooltipData.key] != valueTotals[tooltipData.index] ? (
                 <>
                   <span className="px-1 text-gray-500">/</span>
-                  <span className="text-gray-500">
-                    {valueTotals[tooltipData.index]}{' '}
-                  </span>
+                  <span className="text-gray-500">{valueTotals[tooltipData.index]} </span>
                 </>
               ) : null}
             </div>
             <div className="flex flex-col pl-1">
               <div className="text-sm font-medium text-gray-300">
-                {getLabel(
-                  tooltipData.key,
-                  tooltipData.bar.data[tooltipData.key],
-                )}
+                {getLabel(tooltipData.key, tooltipData.bar.data[tooltipData.key])}
               </div>
               <div className="text-xs text-gray-400">
                 {formatDate(getDate(tooltipData.bar.data), true)}
@@ -350,7 +323,11 @@ const ErrorComponent: FunctionComponent = () => {
   );
 };
 
-export const BarStackChart = Object.assign(Root, {
+export const ClientBarStackChart = <T extends string | number>(props: BarStackProps<T>) => {
+  return <ClientOnly>{() => <BaseComponent {...props} />}</ClientOnly>;
+};
+
+export const BarStackChart = Object.assign(ClientBarStackChart, {
   Skeleton,
   Error: ErrorComponent,
 });

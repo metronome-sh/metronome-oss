@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { teams, users } from '@metronome/db.server';
+import { teams, users } from '@metronome/db';
 import { ActionFunctionArgs, redirect } from '@remix-run/node';
 import { useSubmit } from '@remix-run/react';
 import { useCallback } from 'react';
@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Brand, Button, Card, Container, Form, Input } from '#app/components';
-import { handle } from '#app/handlers';
+import { handle } from '#app/handlers/handle';
 
 export const CreateUserSchema = z
   .object({
@@ -71,15 +71,10 @@ export default function Component() {
       <Brand className="h-9" />
       <Card className="w-full max-w-md">
         <Form.Provider {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col gap-8"
-          >
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-8">
             <Card.Header className="space-y-1">
               <Card.Title className="text-lg">Welcome to Metronome</Card.Title>
-              <Card.Description>
-                Create your instance user to get started.
-              </Card.Description>
+              <Card.Description>Create your instance user to get started.</Card.Description>
             </Card.Header>
             <Card.Content className="flex flex-col gap-4 w-full">
               <Form.Field

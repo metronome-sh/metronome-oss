@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { z } from 'zod';
 
 import {
-  type FilterObject,
+  type FilterDefinitionFunction,
   type FilterOption,
   type FilterUpdate,
 } from '../filters.types';
@@ -26,7 +26,7 @@ const filter1 = {
   options: [option1Filter1],
   label: 'Foo',
   server: { parse: () => null },
-} satisfies FilterObject<any, unknown>;
+} satisfies FilterDefinitionFunction<any, unknown>;
 
 const option1Filter2 = {
   optionId: 'option-1-filter-2',
@@ -49,30 +49,22 @@ const filter2 = {
   options: [option1Filter2, option2Filter2],
   label: 'Foo',
   server: { parse: () => null },
-} satisfies FilterObject<any, unknown>;
+} satisfies FilterDefinitionFunction<any, unknown>;
 
 const filters = [filter1, filter2];
 
 describe('analyzeDependencies', () => {
   test('should return updates object empty if not filters are provided', async () => {
-    const { updates } = analyzeDependencies(
-      [],
+    const { updates } = analyzeDependencies([], toActiveFilterOption('filter-1', option1Filter1), [
       toActiveFilterOption('filter-1', option1Filter1),
-      [
-        toActiveFilterOption('filter-1', option1Filter1),
-        toActiveFilterOption('filter-2', option1Filter2),
-      ],
-    );
+      toActiveFilterOption('filter-2', option1Filter2),
+    ]);
     expect(updates).toEqual([]);
   });
 
   test('should throw if filter doest not have an active option', async () => {
     expect(() =>
-      analyzeDependencies(
-        filters,
-        toActiveFilterOption('filter-1', option1Filter1),
-        [],
-      ),
+      analyzeDependencies(filters, toActiveFilterOption('filter-1', option1Filter1), []),
     ).toThrowError(
       /passed in filters array needs to exist as an active option in activeOptions array/,
     );
@@ -143,7 +135,7 @@ describe('analyzeDependencies', () => {
       options: [option1Filter2, option2Filter2],
       label: 'Foo',
       server: { parse: () => null },
-    } satisfies FilterObject<any, unknown>;
+    } satisfies FilterDefinitionFunction<any, unknown>;
 
     const { updates } = analyzeDependencies(
       [filter1, filter2],
@@ -178,7 +170,7 @@ describe('analyzeDependencies', () => {
       options: [option1Filter2, option2Filter2],
       label: 'Foo',
       server: { parse: () => null },
-    } satisfies FilterObject<any, unknown>;
+    } satisfies FilterDefinitionFunction<any, unknown>;
 
     const filters = [filter1, filter2];
 
@@ -220,19 +212,15 @@ describe('analyzeDependencies', () => {
       options: [option1Filter2, option2Filter2],
       label: 'Foo',
       server: { parse: () => null },
-    } satisfies FilterObject<any, unknown>;
+    } satisfies FilterDefinitionFunction<any, unknown>;
 
     const filters = [filter1, filter2];
 
     expect(() =>
-      analyzeDependencies(
-        filters,
+      analyzeDependencies(filters, toActiveFilterOption('filter-1', option1Filter1), [
         toActiveFilterOption('filter-1', option1Filter1),
-        [
-          toActiveFilterOption('filter-1', option1Filter1),
-          toActiveFilterOption('filter-2', option1Filter2),
-        ],
-      ),
+        toActiveFilterOption('filter-2', option1Filter2),
+      ]),
     ).toThrowError(/No non colliding option was found/);
   });
 });
@@ -295,7 +283,7 @@ describe('depencenciesCollides', () => {
       options: [option1Filter2, option2Filter2],
       label: 'Foo',
       server: { parse: () => null },
-    } satisfies FilterObject<any, unknown>;
+    } satisfies FilterDefinitionFunction<any, unknown>;
 
     const filters = [filter1, filter2];
 
@@ -322,7 +310,7 @@ describe('depencenciesCollides', () => {
       options: [option1Filter2, option2Filter2],
       label: 'Foo',
       server: { parse: () => null },
-    } satisfies FilterObject<any, unknown>;
+    } satisfies FilterDefinitionFunction<any, unknown>;
 
     const filters = [filter1, filter2];
 
@@ -349,7 +337,7 @@ describe('depencenciesCollides', () => {
       options: [option1Filter2, option2Filter2],
       label: 'Foo',
       server: { parse: () => null },
-    } satisfies FilterObject<any, unknown>;
+    } satisfies FilterDefinitionFunction<any, unknown>;
 
     const filters = [filter1, filter2];
 

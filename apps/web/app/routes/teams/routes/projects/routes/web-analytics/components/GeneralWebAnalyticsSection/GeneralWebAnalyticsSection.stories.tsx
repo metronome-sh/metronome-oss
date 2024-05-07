@@ -13,8 +13,8 @@ import {
   viewsSeries,
   bounceRateSeries,
   medianSessionTimeSeries,
-} from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+} from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ web-analytics/components/GeneralWebAnalyticsSection',
@@ -32,7 +32,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             json({
               sessionsOverview,
@@ -61,7 +61,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               visitorsRightNow: new Promise(() => {}),
@@ -90,7 +90,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               visitorsRightNow: Promise.reject(),
@@ -120,7 +120,7 @@ export const Navigating: Story = {
         [
           {
             path: '/',
-            element: <Story />,
+            Component: Story,
             loader: () =>
               json({
                 visitorsRightNow,
@@ -160,7 +160,7 @@ export const Navigating: Story = {
               },
             },
           ],
-        }
+        },
       );
 
       return <RemixStub />;

@@ -1,16 +1,15 @@
-import { parse, Tokenizer } from '@markdoc/markdoc';
+import markdoc from '@markdoc/markdoc';
 import fs from 'fs/promises';
 import yaml from 'js-yaml';
 import path from 'path';
 
-import { DOCUMENTS_PATH } from '../constants';
+import { getDocumentsPath } from '../constants';
 import { type DocumentMeta } from '../types';
 
+const { parse, Tokenizer } = markdoc;
+
 export async function getDocumentMeta(filename: string): Promise<DocumentMeta> {
-  const source = await fs.readFile(
-    path.resolve(DOCUMENTS_PATH, filename),
-    'utf-8',
-  );
+  const source = await fs.readFile(path.resolve(getDocumentsPath(), filename), 'utf-8');
 
   const tokenizer = new Tokenizer({ allowComments: true });
 

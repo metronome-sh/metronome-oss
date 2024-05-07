@@ -1,15 +1,17 @@
 import { json, type LinksFunction, type LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import path from 'path';
+import favicon from '#app/images/favicon.svg';
+import faviconAlt from '#app/images/favicon-alternate.png';
+import faviconAltSvg from '#app/images/favicon-alternate.svg';
+import socialPreview from '#app/images/social-preview.png';
+import { EventProvider } from '#app/events/EventProvider';
+import { getObservableRoutes } from '#app/events/getObservableRoutes';
+import { handle } from '#app/handlers/handle';
+import { useTimeZoneSync } from '#app/hooks/useTimeZoneSync';
 
-import favicon from '#app/../public/images/favicon.svg';
-import faviconAlt from '#app/../public/images/favicon-alternate.png';
-import faviconAltSvg from '#app/../public/images/favicon-alternate.svg';
-import socialPreview from '#app/../public/images/social-preview.png';
-import { EventProvider, getObservableRoutes } from '#app/events';
-import { handle } from '#app/handlers';
+import './tailwind.css';
 
-import { useTimeZoneSync } from './hooks';
-import styles from './tailwind.css';
 import { getTimeZoneFromRequest } from './utils/timeZone';
 const title = 'Metronome';
 const metronomeUrl = 'https://metronome.sh';
@@ -35,7 +37,6 @@ export const meta: MetaFunction = () => [
 ];
 
 export const links: LinksFunction = () => [
-  { rel: 'stylesheet', href: styles },
   { rel: 'icon', href: favicon, type: 'image/svg+xml' },
   { rel: 'apple-touch-icon', href: faviconAlt },
   { rel: 'mask-icon', href: faviconAltSvg, color: '#fff' },
@@ -46,7 +47,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const user = await auth.user({ required: false });
 
-  const observableRoutes = getObservableRoutes();
+  const observableRoutes = getObservableRoutes?.([path.resolve(process.cwd(), 'app')]) ?? [];
 
   const timeZone = getTimeZoneFromRequest(request);
 
@@ -75,7 +76,6 @@ function App() {
         <Outlet />
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

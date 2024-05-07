@@ -8,8 +8,8 @@ import {
   sessionsOverview,
   pageviewsCount,
   visitorsRightNow,
-} from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+} from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ overview/components/WebAnalyticsSection',
@@ -30,7 +30,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () => {
             return json({
               project,
@@ -58,7 +58,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () => {
             return defer({
               project,

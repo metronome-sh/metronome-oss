@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { TableWithBarChart } from '.';
-import { createRemixStub } from '~/storybook/mocks';
-import { locationsByCountry, timeZone } from '~/storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
+import { locationsByCountry, timeZone } from '#storybook/stubs';
 import { json } from '@remix-run/node';
-import { countryFlag } from '~/utils/countryFlag';
+import { countryFlag } from '#app/utils/countryFlag';
 import { cn } from '../utils';
-import { formatNumber } from '~/utils';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { formatNumber } from '#app/utils/formatNumber';
+import { Tooltip } from '#app/components/Tooltip';
 
 const meta = {
   title: 'Basic/TableWithBarChart',
@@ -20,7 +20,7 @@ const meta = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: (
+          Component: () => (
             <div className="w-200 h-100">
               <Story />
             </div>
@@ -57,16 +57,16 @@ export const Customized: Story = {
             {(value as number) < 1000 ? (
               value.toLocaleString()
             ) : (
-              <TooltipProvider>
+              <Tooltip.Provider>
                 <Tooltip>
-                  <TooltipTrigger disabled={(value as number) < 1000}>
+                  <Tooltip.Trigger disabled={(value as number) < 1000}>
                     {formatNumber(value as number)}
-                  </TooltipTrigger>
-                  <TooltipContent>
+                  </Tooltip.Trigger>
+                  <Tooltip.Content>
                     <p>{value.toLocaleString()}</p>
-                  </TooltipContent>
+                  </Tooltip.Content>
                 </Tooltip>
-              </TooltipProvider>
+              </Tooltip.Provider>
             )}
           </div>
         ),

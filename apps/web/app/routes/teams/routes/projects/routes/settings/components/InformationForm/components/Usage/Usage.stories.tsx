@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Usage } from '.';
 import { defer, json } from '@remix-run/node';
-import { usage } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { usage } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ settings/components/InformationForm/components/Usage',
@@ -21,7 +21,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/1/1/settings',
-          element: <Story />,
+          Component: Story,
           loader: () => json({ usage }),
         },
       ]);
@@ -38,7 +38,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/1/1/settings',
-          element: <Story />,
+          Component: Story,
           loader: () => defer({ usage: new Promise(() => {}) }),
         },
       ]);
@@ -55,7 +55,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/1/1/settings',
-          element: <Story />,
+          Component: Story,
           loader: () => defer({ usage: Promise.reject() }),
         },
       ]);

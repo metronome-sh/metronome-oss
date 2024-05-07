@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Invocations } from '.';
 import { defer, json } from '@remix-run/node';
-import { loadersOverview } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { loadersOverview } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ overview/components/LoadersSection/components/Invocations',
@@ -21,7 +21,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () => json({ loadersOverview }),
         },
       ]);
@@ -38,7 +38,7 @@ export const Loading: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               loadersOverview: new Promise(() => {}),
@@ -58,7 +58,7 @@ export const Error: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/',
-          element: <Story />,
+          Component: Story,
           loader: () =>
             defer({
               loadersOverview: Promise.reject(),

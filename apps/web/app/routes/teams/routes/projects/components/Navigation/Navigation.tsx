@@ -1,18 +1,21 @@
-import { NavLink } from '@remix-run/react';
-import { FunctionComponent, useMemo } from 'react';
+import { Await, NavLink, useLocation, useNavigation } from '@remix-run/react';
+import { FunctionComponent, Suspense, useMemo } from 'react';
 
-import { Icon, ScrollArea, Tooltip } from '#app/components';
+import { Badge, Icon, ScrollArea, Tooltip } from '#app/components';
 import { buttonVariants } from '#app/components/Button';
 import { cn } from '#app/components/utils';
 import { useTeamLoaderData } from '#app/routes/teams/hooks';
 
-import { useTeamProjectLoaderData } from '../../hooks';
+import { useTeamProjectEventData, useTeamProjectLoaderData } from '../../hooks';
 
 export const Navigation: FunctionComponent = () => {
   const { team } = useTeamLoaderData();
   const { project } = useTeamProjectLoaderData();
 
-  const navigation = useMemo(() => {
+  const { unseenErrorsCount } = useTeamProjectLoaderData();
+  const { unseenErrorsCount: unseenErrorsCountEvent } = useTeamProjectEventData(unseenErrorsCount);
+
+  const navigationLinks = useMemo(() => {
     return [
       {
         name: 'Overview',
@@ -54,14 +57,14 @@ export const Navigation: FunctionComponent = () => {
   }, [team, project]);
 
   return (
-    <div className="relative w-full md:pt-5 md:pb-1 px-4 border-b bg-black">
-      <ScrollArea className="h-10">
+    <div className="relative w-full md:pt-1 px-0 md:px-4 border-b bg-black">
+      <ScrollArea className="h-14">
         <ScrollArea.ScrollBar orientation="horizontal">
           <ScrollArea.Thumb className="hidden" />
         </ScrollArea.ScrollBar>
-        <div className="flex gap-2">
+        <div className="flex gap-2 px-4 md:px-0 pt-4">
           <Tooltip.Provider>
-            {navigation.map((item) => {
+            {navigationLinks.map((item) => {
               const markup = (
                 <>
                   <item.Icon
@@ -115,11 +118,34 @@ export const Navigation: FunctionComponent = () => {
                   prefetch="intent"
                   to={item.to}
                   className={({ isActive, isPending }) => {
-                    return cn(buttonVariants({ variant: 'ghost' }), 'group relative px-2', {
-                      'group active': isActive || isPending,
-                    });
+                    return cn(
+                      buttonVariants({ variant: 'ghost' }),
+                      'group relative overflow-visible',
+                      {
+                        'group active': isActive || isPending,
+                      },
+                    );
                   }}
                 >
+                  {/* Error badge */}
+                  {item.name === 'Errors' ? (
+                    <Suspense fallback={null}>
+                      <Await resolve={unseenErrorsCount}>
+                        {() => {
+                          if (!unseenErrorsCountEvent || unseenErrorsCountEvent === 0) return null;
+
+                          return (
+                            <Badge
+                              variant="destructive"
+                              className="absolute -top-1 -right-1 rounded-md px-0 py-0 h-5 w-5 flex items-center justify-center"
+                            >
+                              {unseenErrorsCountEvent < 10 ? unseenErrorsCountEvent : '9+'}
+                            </Badge>
+                          );
+                        }}
+                      </Await>
+                    </Suspense>
+                  ) : null}
                   {markup}
                 </NavLink>
               );

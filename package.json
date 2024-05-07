@@ -7,8 +7,10 @@
   "main": "index.js",
   "scripts": {
     "clean": "find . '(' -name \"node_modules\" -o -name \"build\" -o -name \"dist\" -o -name \".cache\" -o -name \".turbo\" ')' -type d -prune -exec rm -rf '{}' +",
-    "dev": "pnpm -r --parallel dev",
+    "dav:all": "pnpm -r --parallel dev",
+    "dev": "pnpm -r --parallel --filter \"!@metronome/producer\" dev",
     "dev:web": "pnpm -r --parallel --filter \"@metronome/web...\" dev",
+    "dev:workers": "pnpm -r --parallel --filter \"@metronome/workers...\" dev",
     "build": "pnpm -r build",
     "docker:up": "docker-compose --env-file .env -f docker-compose.dev.yml up -d",
     "docker:stop": "docker-compose --env-file .env -f docker-compose.dev.yml stop",
@@ -16,33 +18,44 @@
     "docker:restart": "docker-compose --env-file .env -f docker-compose.dev.yml restart",
     "reset": "pnpm clean && pnpm i && pnpm -r build",
     "lint": "eslint --ext .ts,.tsx . --config .eslintrc.json --fix",
-    "db": "pnpm --dir packages/db.server",
-    "docker:push": "docker build  -t metronomedotsh/metronome:latest -f Dockerfile . && docker push metronomedotsh/metronome:latest"
+    "db": "pnpm --filter @metronome/db",
+    "web": "pnpm --dir apps/web",
+    "storybook": "pnpm --dir apps/web storybook",
+    "docker:push": "docker build  -t metronomedotsh/metronome:latest -f Dockerfile . && docker push metronomedotsh/metronome:latest",
+    "user:reset-password": "pnpm --filter @metronome/db user:reset-password"
   },
   "keywords": [],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
-    "eslint": "^8.52.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
-    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-monorepo": "^0.3.2",
-    "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "prettier": "^3.0.3",
-    "tailwindcss": "^3.3.5"
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.3"
   },
   "dependencies": {
+    "@metronome/db": "workspace:*",
     "boxen": "^7.1.1",
     "chalk": "^5.3.0",
     "cross-env": "^7.0.3",
-    "nanoid": "^3.3.6",
+    "nanoid": "^3.3.7",
     "ora": "^7.0.1",
     "yargs": "^17.7.2"
+  },
+  "pnpm": {
+    "patchedDependencies": {},
+    "overrides": {
+      "react": "18.3.0-canary-eb33bd747-20240312",
+      "react-dom": "18.3.0-canary-eb33bd747-20240312"
+    }
   }
 }

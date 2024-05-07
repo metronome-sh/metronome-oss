@@ -28,12 +28,22 @@ export const Breadcrumb: FunctionComponent<BreadcrumbProps> = ({
   if (!breadcrumbOutlet) return null;
 
   return createPortal(
-    <li className="flex gap-2 items-center text-sm">
+    <li className="flex gap-1 items-center text-sm">
       <Icon.ChevronRight
         strokeWidth={2}
-        className={cn('stroke-muted-foreground', chevronClassName)}
+        className={cn('stroke-muted-foreground/50 breadcrumb-chevron', chevronClassName)}
       />
-      {link ? <Link to={link}>{children}</Link> : <>{children}</>}
+      {/* <Icon.Slash
+        strokeWidth={2}
+        className={cn('stroke-muted-foreground/50 breadcrumb-chevron w-6 h-6', chevronClassName)}
+      /> */}
+      {link ? (
+        <Link to={link} prefetch="intent" className={cn(link && 'hover:underline')}>
+          {children}
+        </Link>
+      ) : (
+        <>{children}</>
+      )}
     </li>,
     breadcrumbOutlet,
   );

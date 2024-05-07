@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { DangerZoneForm } from '.';
 import { json } from '@remix-run/node';
-import { project, projects } from '~/storybook/stubs';
-import { createRemixStub } from '~/storybook/mocks';
+import { project, projects } from '#storybook/stubs';
+import { createRemixStub } from '#storybook/mocks/createRemixStub';
 
 const meta = {
   title: 'Routes/:teamId ⁄ :projectId ⁄ settings/components/DangerZoneForm',
@@ -21,7 +21,7 @@ export const Default: Story = {
       const RemixStub = createRemixStub([
         {
           path: '/1/1/settings',
-          element: <Story />,
+          Component: Story,
           loader: () => json({ project, projects }),
         },
       ]);
